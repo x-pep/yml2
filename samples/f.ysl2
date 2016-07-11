@@ -1,0 +1,19 @@
+include yslt.yml2
+
+tstylesheet {
+    function stType {
+        param "type";
+
+        choose {
+            when "$type='long'" > DINT
+            when "$type='short'" > INT
+        }
+    }
+
+    function cType {
+        param "type";
+
+        when "$type='long'" > int32_t
+        when "$type='short'" > int16_t
+    }
+}

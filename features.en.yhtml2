@@ -1,0 +1,1090 @@
+include homepage.en.yhtml2
+
+page "The Features" {
+    h2 id=text > Text
+
+    p   >>
+        To output text nodes (¬http://www.w3.org/TR/2008/REC-xml-20081126/#syntax character data¬),
+        write literals. There are integer literals, floating point literals and text literals.
+        >>
+
+    p   >>
+        Literals are written
+        ¬http://docs.python.org/reference/lexical_analysis.html#id7 like in Python¬,
+        that means, text literals are in single or double quotes, or multiline
+        in triple double quotes:
+        >>
+
+    Code    ||
+            "text" 'also text' """some more text"""
+            42 "an integer and" 42.23 "a floating point literal"
+            ||
+
+    p   >>
+        Literals are being output by the ¬#textfunction text function¬.
+        >>
+
+    h2 id=functioncalls > Function Calls
+
+    p   >>
+        The main idea of YML scripts is calling functions which then generate
+        XML tags (¬http://www.w3.org/TR/2008/REC-xml-20081126/#syntax Markup¬).
+        Functions are generating single tags, lists or trees of tags.
+        >>
+    
+    p   >>
+        To call a function, write the name of the function, followed by a comma separated list
+        of function parameters (C like syntax) or just «attribute=value» pairs. Unlike C, you don't
+        need to insert the parameter list into parentheses. A simple function call can be terminated
+        by a semicolon «;» or by a period «.»
+        >>
+    
+    p   >>
+        It does not matter, if you're calling your function using parentheses or brackets or without.
+        So these statements are equal:
+        >>
+
+    Code    ||
+            foo "hello, world";
+            foo "hello, world".
+            foo("hello, world");
+            foo["hello, world"];
+            ||
+
+    h3 id=subtree > Subtrees
+
+    p   >>
+        If you omit the tailing semicolon, you're creating a Subtree; YML Subtrees can also be
+        opened and closed with braces:
+        >>
+
+    Code    ||
+            foo {
+                bar {
+                    something;
+                }
+            }
+            ||
+
+    p > If a Subtree only consists of one single subelement, then you may omit the braces:
+
+    Code    ||
+            foo
+                bar;
+            ||
+
+    h3 id=named > Named Parameters
+
+    p   >>
+        To generate ¬http://www.w3.org/TR/2008/REC-xml-20081126/#attdecls attributes¬ by calling
+        a function, you can use Named Parameters.
+        >>
+
+    p   >>
+        For that case, assign literals or symbols to attribute names like the following.
+        The name of the parameter then will be used as the name of the generated attribute.
+        An example:
+        >>
+
+    Code    ||
+            div id=sample {
+                "this is a " a href="#sample" "link sample"
+            }
+            ||
+
+    p > This generates:
+
+    Code | <div id="sample">this is a <a href="#sample">link sample</a></div>
+
+    h3 > Unnamed Parameters
+
+    p   >>
+        Unnamed Parameters prepare values for predefined attributes. The following example is
+        equivalent to the sample above:
+        >>
+
+    Code    ||
+            decl a(href);
+            decl div(id);
+
+            div "sample" {
+                "this is a " a "#sample" "link sample"
+            }
+            ||
+
+    p > If no predefined attribute can be allocated, the value of the parameter is added to the body.
+
+    h3 > Calling with &
+
+    p   >>
+        Especially if you have a ¬#defaultbody default body¬ for your function, calling with
+        a leading «&» can be sensible: then the tag itself is omitted and only the body is being output:
+        >>
+
+    Code    ||
+            decl something { tag1; tag2; };
+
+            list {
+                &something;
+            }
+            ||
+
+    p > results in:
+
+    Code    ||
+            <list>
+              <tag1/>
+              <tag2/>
+            </list>
+            ||
+
+    p   >>
+        This has the same result as ¬#alias aliasing¬ «something» to «-».
+        >>
+
+    h3 id=funclist > Function Lists
+
+    p   >>
+        Function Lists are a feature of YML to simulate a more C like syntax. Let's have some
+        examples. You can have a list of functions whereever you can have a function. Function
+        Lists are comma separated:
+        >>
+
+    Code    ||
+            x i, j, k
+            ||
+
+    p > compiles to:
+
+    Code    ||
+            <x>
+              <i/>
+              <j/>
+              <k/>
+            </x>
+            ||
+
+    h3 id=paramlists > Parameter Lists
+
+    p   >>
+        A sample together with ¬#descending Descending Attributes¬:
+        >>
+
+    Code    ||
+            decl Interface @name;
+            decl attr @type @name;
+            decl func @type @name;
+
+            Interface Icecream {
+                attr color flavour;
+                attr long number;
+                func int getPrice();
+                func void addFlavour(in color flavour, in long number);
+            }
+            ||
+
+    p > compiles to:
+    
+    Code    ||
+            <Interface name="Icecream">
+              <attr type="color" name="flavour"/>
+              <attr type="long" name="number"/>
+              <func type="int" name="getPrice"/>
+              <func type="void" name="addFlavour">
+                <parm>
+                  <in/>
+                  <color/>
+                  <flavour/>
+                </parm>
+                <parm>
+                  <in/>
+                  <long/>
+                  <number/>
+                </parm>
+              </func>
+            </Interface>
+            ||
+
+    p   >>
+        Note the «parm» tags – they're generated by default, if you write a Parameter List
+        behind a Function Call. That differs from calling the function with parameters –
+        ¬#functioncalls calling¬ means using ¬#text text¬ values.
+        >>
+
+    p   >>
+        The «parm» tags are emitted, because the «_parm» function is called each time
+        such a parameter will be emitted.
+        >>
+
+    p   >>
+        If you want to have the «_parm» function doing other things, just ¬#decl declare¬
+        it in another way.
+        >>
+
+    h3 id=generics > Generic Declarations
+
+    p   >>
+        Using Generic Declarations is just like using ¬#paramlists Parameter Lists¬ – use angle brackets
+        instead of parentheses. For Generic Declarations, the «_generic» function is called each
+        time such a Generic Declaration will be emitted, generating «generic» tags as the default:
+        >>
+
+    Code | max<int>(x, y)
+
+    p > compiles to:
+
+    Code    ||
+            <max>
+              <generic>
+                <int/>
+              </generic>
+              <parm>
+                <x/>
+              </parm>
+              <parm>
+                <y/>
+              </parm>
+            </max>
+            ||
+
+    h3 id=contentfc > The «content» function
+
+    p   >>
+        The «content;» Function Call has a special meaning (only in a ¬#defaultbody default body¬):
+        it does not generate a tag, but instead
+        the tags of a supplied body in a call will be inserted at each place where the «content;»
+        function call is existing in the ¬#defaultbody default body¬.
+        >>
+
+    h3 id=textfunction > The «text» function
+
+    p   >>
+        There is a special YML function named «text». Usually, it's just ¬#alias aliased¬ to «-» (and 
+        therefore outputting nothing). The «text» function is called each time a text literal will be
+        output.
+        >>
+
+    p   >>
+        If you ¬#decl declare¬ the «text» function, you can overload that behaviour. For example,
+        ¬yslt YSLT¬ is declaring «text» like this:
+        >>
+
+    Code    ||
+            decl text alias xsl:text;
+            
+            "test"
+            ||
+
+    p > generates:
+
+    Code | <xsl:text>test</xsl:text>
+
+    p   >>
+        The «text» function is not called, if you give text as a value for an attribute:
+        >>
+
+    Code    ||
+            decl text alias xsl:text;
+            
+            a "test"
+            ||
+
+    p > generates:
+
+    Code | <a>test</a>
+
+    p   >>
+        But it is called using the quoting operators:
+        >>
+
+    Code    ||
+            decl text alias xsl:text;
+            
+            a > test
+            ||
+
+    p > generates:
+
+    Code | <a><xsl:text>test</xsl:text></a>
+
+    h3 id=declfunction > The «decl», «define» and «operator» functions
+
+    p   >>
+        The «decl», «define» and «operator» functions are not defined, so they cannot be used
+        accidentally by having a syntax error i.e. in a «decl» statement. If you want to use such
+        a function, i.e. «decl()», you have to ¬#decl declare it explicitely¬:
+        >>
+
+    Code    ||
+            decl decl;
+            decl();
+            ||
+
+    p > will result in:
+
+    Code | <decl/>
+
+    h2 id=decl > Declaring Functions: decl
+
+    p   >>
+        As default, each Function Call generates one XML tag, which has the same name. To be exact,
+        the XML tag has dashes in it's name where the YML function has underscores.
+        >>
+
+    p   >>
+        To define, how tags and attributes look like, which are created by a Function Call, you
+        can use the «decl» statement.
+        >>
+
+    h3 > Trivial Declarations
+
+    p > In a trivial declaration, you're just declaring the Function Name and so the XML tag name:
+
+    Code | decl html, head, title, body, p, a;
+
+    p > As seen in the example, multiple declarations can be done in a comma separated list.
+
+    p   >>
+        Because trivial declarations are done automatically, if you're using a function for the
+        first time, you usually don't need to declare this way.
+        >>
+
+    h3 > Specifying Unnamed Parameters
+
+    p   >>
+        To specifiy Unnamed Parameters, give the parameter list comma separated in parentheses
+        or provide one or more brackets with parameter lists in them:
+        >>
+
+    Code | decl a(href), img[src];
+
+    p   >>
+        If you're using the corresponding functions a() and img() together with an unnamed parameter
+        in a call, then these attributes are used for applying the values, respectively:
+        >>
+
+    Code | a "http://www.ccc.de" "The Club Homepage" img "logo.png";
+
+    p > These Function Calls generate:
+    
+    Code | <a href="http://www.ccc.de">The Club Homepage</a><img src="logo.png"/>
+
+    h3 id=defaultattr > Giving Default Values for parameters
+
+    p   >>
+        To give default values for generating XML attributes, assign a literal to each named parameter
+        in the declaration parentheses or brackets. Two examples, which do the same:
+        >>
+
+    Code
+        ||
+        decl img(src, alt="picture");
+        decl img[src][alt="picture"];
+        ||
+
+    h3 id=alias > Aliasing: using different YML functions for the same XML tag for different tasks
+
+    p   >>
+        Sometimes tags are used in different ways to do different things. For this case, you can
+        use aliasing. Aliasing means, the YML function name and the XML tag name differ. For example:
+        >>
+
+    Code | decl a(href), target(name) alias a;
+
+    p > Both defined YML functions then generate «<a />» tags – but the Unnamed Parameter differs.
+
+    p   >>
+        The alias name «-» has a special meaning: it omits the tag in the output. That is especially
+        sensible if you have a ¬#defaultbody default body¬. Then an alias to «-» has the same meaning
+        as starting the function call with the «&» character: only the body is emitted.
+        >>
+
+    h3 id=descending > Specifying Descending Attributes
+
+    p   >>
+        Maybe you want to write something like this:
+        >>
+
+    Code    ||
+            Module ERP {
+                Interface Customer {
+                    // ...
+                }
+            }
+            ||
+
+    p > Without any extras, this compiles to:
+
+    Code    ||
+            <Module>
+                <ERP>
+                    <Interface>
+                        <Customer />
+                    </Interface>
+                </ERP>
+            </Module>
+            ||
+
+    p   >>
+        For this case, it would be practical, if «ERP» would not be interpreted as extra tag
+        but as value for an attribute «name». This you can achive with Descending Attributes:
+        >>
+
+    Code | decl Module @name, Interface @name;
+
+    p > With this declaration, the code sample above is compiling to:
+
+    Code    ||
+            <Module name="ERP">
+                <Interface name="Customer" />
+            </Module>
+            ||
+
+    p   >>
+        Descending attributes can also be used this way:
+        >>
+
+    Code    ||
+            decl module +name;
+            decl element +name;
+
+            module Some {
+                element {
+                    one;
+                    two;
+                    three;
+                }
+                element {
+                    four; five; six
+                }
+            }
+            ||
+
+    p   >>
+        The above generates:
+        >>
+
+    Code    ||
+            <?xml version='1.0' encoding='UTF-8'?>
+            <module name="Some">
+              <element name="one"/>
+              <element name="two"/>
+              <element name="three"/>
+              <element name="four"/>
+              <element name="five"/>
+              <element name="six"/>
+            </module>
+            ||
+
+    h3 id=descending_pointer > Specifying Descending Pointers
+
+    p   >>
+        Like with descending attributes, you can use descending ¬#pointer pointers¬. Instead of preceding the
+        name of an attribute with a «+» sign (like with ¬#descending descending attributes¬), precede it with an asterisk «*».
+        >>
+
+    p   >>
+        Like with ¬#pointer pointers¬ in general, it's a good idea to combine that with a ¬#defaultbody default body¬:
+        >>
+
+    Code    ||
+            decl f *p { some tags with *p };
+
+            f value;
+            ||
+
+    p   >>
+        This generates:
+        >>
+
+    Code    ||
+            <?xml version='1.0' encoding='UTF-8'?>
+            <f>
+              <some>
+                <tags>
+                  <with>value</with>
+                </tags>
+              </some>
+            </f>
+            ||
+
+    h3 id=defaultbody > Supplying a Default Body
+
+    p   >>
+        Additionally, you can supply a Default Body for each tag. For that case, add a YML function
+        block in braces to your declaration:
+        >>
+
+    Code    ||
+            decl pageContent alias body {
+                a name=top;
+                include heading.en.yhtml2;
+                div id=entries
+                content;
+            };
+            ||
+
+    p > The sample above is used for generating this homepage, for example.
+
+    p > See the ¬#contentfc content function¬.
+
+    h3 id=inheritance > Inheritance
+
+    p   >>
+        Declarations can ¬http://en.wikipedia.org/wiki/Inheritance_(computer_science) inherit¬
+        information from previous declarations. For that case, there is the
+        possibility to use an «is» clause to give a function name to inherit from.
+        >>
+
+    p > The following is an example from the YSLT specification:
+
+    Code    ||
+            decl stylesheet(version="1.0", xmlns:xsl="http://www.w3.org/1999/XSL/Transform");
+
+            decl estylesheet is stylesheet (
+                xmlns:exsl='http://exslt.org/common',
+                xmlns:math='http://exslt.org/math',
+                xmlns:func='http://exslt.org/functions',
+                xmlns:str='http://exslt.org/strings',
+                xmlns:dyn='http://exslt.org/dynamic',
+                xmlns:set='http://exslt.org/sets',
+                extension-element-prefixes='exsl func str dyn set math'
+            );
+
+            decl textstylesheet is estylesheet {
+                output "text";
+                const "space", !"'" + " " * 200 + "'"!;
+                param "autoindent", 4;
+                content;
+            }, tstylesheet is textstylesheet;
+            ||
+
+    p   >>
+        Here «estylesheet» inherits the tag name and the Default Values from «stylesheet»,
+        while «textstylesheet» inherits all from «estylesheet» again. «estylesheet» then adds
+        a Default Body, and «tstylesheet» does exactly the same as «textstylesheet».
+        >>
+
+    p > All of these YML functions output «stylesheet» XML tags, but with different defaults.
+
+    h3 id=shapes > Shapes
+
+    p   >>
+        Shapes are comparable to ¬#inheritance inheritance¬. Declaring a shape inherits
+        every property beside the name.
+        >>
+
+    Code    ||
+            decl coords(x=0, y=0);
+            decl point <coords> (name);
+
+            point "origin";
+            ||
+
+    p > compiles to:
+
+    Code | <point y="0" x="0" name="origin"/>
+  
+    p   >>
+        It's possible to have more than one shape, too. Multiple shapes
+        are patching each other in the sequence they're listed:
+        >>
+
+    Code    ||
+            decl coords(x=0, y=0);
+            decl named +name;
+            decl point <coords, named>;
+
+            point origin;
+            ||
+
+    p > compiles to:
+
+    Code | <point y="0" x="0" name="origin" />
+            
+    h3 > Namespaces
+
+    p   >>
+        ¬http://www.w3.org/TR/xml-names/ XML namespaces¬ can be used just by providing an
+        «alias» clause. Additionally, they can be used by an «in» clause; these two lines
+        are equivalent:
+        >>
+
+    Code    ||
+            decl apply(select) alias xsl:apply-templates;
+            in xsl decl apply(select) alias apply-templates;
+            ||
+
+    p > «in» clauses also can be used with a block of declarations in braces:
+
+    Code    ||
+            in xsl {
+                decl template(match);
+                decl apply(select) alias apply-templates;
+
+                decl function(name) alias template;
+                decl call(name) alias call-template;
+            }
+            ||
+
+    h3 id=pointer > Pointers
+
+    p   >>
+        In some situations, it is good to have information in a Function Call, which then
+        changes the way XML tags are generated. For this case, there are Pointers.
+        >>
+
+    p   >>
+        The name should not mislead you; I took it because I chose the «*» symbol to declare them,
+        and that is the meaning of this symbol in the programming language C. The concept behind
+        is very easy.
+        >>
+
+    p   >>
+        For example, it could be a good idea to generate a small HTML document containing some
+        content. For this case, the title of the page is a good case for using pointers:
+        >>
+
+    Code    ||
+            decl page(*title) alias html {
+                head {
+                    title *title;
+                }
+                body {
+                    h1 *title;
+                    content;
+                }
+            };
+            ||
+
+    p   >>
+        In the example above, calling «page('My Page') { p 'hello, world'; }» will result in
+        this XML output:
+        >>
+
+    Code    ||
+            <html>
+                <head>
+                    <title>My Page</title>
+                </head>
+                <body>
+                    <h1>My Page</h1>
+                    <p>hello, world</p>
+                </body>
+            </html>
+            ||
+
+    p   >>
+        Pointers can be referenced in any place in the Default Body of a «decl» statement, also for
+        generating extra tags. Then the value for a Pointer will be the tag name.
+        >>
+
+    p   >>
+        Additionally, you can insert the value of a pointer as text by calling it with two leading
+        asterisks, i.e. if the pointer is defined as «*x», you can insert its value as text using: «**x».
+        >>
+
+    h4 id=pwt > Pointers without tags
+
+    p   >>
+        To give a literal a name, you can define pointers to literals.
+        >>
+
+    Code    ||
+            define *answer = 42;
+            something *answer;
+            ||
+
+    p > will compile to:
+
+    Code | <something>42</something>
+
+    p   >>
+        The «define» keyword as well as the asterisk «*» can be omitted. So this is
+        equivalent to the statements above:
+        >>
+
+    Code    ||
+            answer = 42;
+            something *answer;
+            ||
+
+    h4 > The pointer *_debug_trace
+
+    p   >>
+        If you're calling ¬toolchain#processor yml2proc¬ with ¬toolchain#debug --debug¬, then this pointer is filled
+        with tracing info text, otherwise it's an empty string.
+        >>
+
+    h3 id=macros, "Macros";
+
+    p   >>
+        Macros are a way to generate values for attributes with variable content. Macros can be set
+        like any other parameters; they're used for a text search & replace in the values of attributes
+        when attributes are generated.
+        >>
+
+    p   >>
+        Parameters, which represent macros, are determined with a preceding «%» sign. They're
+        accounted for before any other parameter is accounted for in a function call, even if
+        they were defined after other parameters.
+        >>
+
+    p > An example:
+
+    Code    ||
+            decl foo(%macro, myAttr="something %macro for testing");
+
+            testing
+                foo "nice";
+            ||
+
+    p > This generates:
+
+    Code    ||
+            <testing>
+              <foo myAttr="something nice for testing"/>
+            </testing>
+            ||
+
+    h3 id=nullfunction > The Null Function
+
+    p   >>
+        The function with the name «_» (underscore) is called Null Function. If you define this
+        function, then you're switching off the default behaviour, that trivial declares are done
+        automatically.
+        >>
+
+    p   >>
+        Instead, unknown functions now call the Null Function. This can be very sensible together
+        with ¬#descending Descending Attributes¬:
+        >>
+
+    Code    ||
+            decl _ +type +name alias func;
+            decl interface +name;
+
+            interface Testcase {
+                void f(in string input);
+                long getOptions();
+            }
+            ||
+
+    p > compiles to:
+
+    Code    ||
+            <interface name="Testcase">
+              <func type="void" name="f">
+                <parm>
+                  <in/>
+                  <string/>
+                  <input/>
+                </parm>
+              </func>
+              <func type="long" name="getOptions"/>
+            </interface>
+            ||
+
+    h2 id=quoting > Quoting Operators
+
+    p > Five different quoting operators implement different functionality:
+
+    h3 id=quote > Quote >
+
+    p > The «>» operator quotes into text nodes, doing XML escaping of text. An example:
+
+    Code | > this text will be put into a text node and these angle brackets <> will be quoted
+
+    p > Additionally, it can be used to implement an indention system, see ¬yslt YSLT¬ below.
+
+    p   >>
+        Then an integer literal can be the first part of the operator; it gives the indention
+        level. For example:
+        >>
+
+    Code    ||
+            0> this text is indented to the actual level and then output,
+             >  followed by this text.\\n
+
+            1> this text is indented one indention level\\n
+            2> two levels\\n
+            1> one level again\\n
+            ||
+
+    p   >>
+        Quote text is being output by the ¬#textfunction «text» function¬.
+        >>
+
+    h3 id=blockquote > Block Quote >>
+
+    p {
+        > To include more lines of text into a single quoted area, use double «>>». The lines 
+        > are concatenated together then. An example:
+    }
+
+    Code    ||
+            p   >>
+                This generates a text paragraph for HTML. All this text, which you can find in
+                these lines, is being concatenated together to one single text node, and then put
+                into the body of the <p> ... </p> tag.
+                >>
+            ||
+
+    p   >>
+        Block quote text is being output by the ¬#textfunction «text» function¬.
+        >>
+
+    h3 > Line Quote |
+
+    p > The «|» operator does the same as the «>» operator, adding a newline character to the text node.
+
+    p > Additionally, it can be used to implement an indention system, see ¬yslt YSLT¬ below.
+
+    p > Then it's used together with additional «>» symbols showing the grade of indention:
+
+    Code    ||
+            | not indented
+            |> single indent
+            |>> double indent
+            (...)
+            ||
+
+    p   >>
+        Line quote text is being output by the ¬#textfunction «text» function¬.
+        >>
+
+    h3 > Block Line Quote ||
+
+    p   >>
+        The «||» operator opens and closes a block of lines, which then are handled like if each of
+        them would be preceeded with a Line Operator «|».
+        >>
+
+    p > Sample:
+
+    Code {
+        | ||
+        ||
+        this is code being quoted through
+        this is the second line
+        ||
+        | ||
+    }
+     
+    p > is equivalent to:
+
+    Code {
+        ||
+        | this is code being quoted through
+        | this is the second line
+        ||
+    }
+
+    p   >>
+        Block line quote text is being output by the ¬#textfunction «text» function¬.
+        >>
+
+    h3 > Inserting Commands
+
+    p   >>
+        Just like with a ¬http://en.wikipedia.org/wiki/Shell_(computing)#Unix_shells Unix shell¬,
+        you can insert statements into text by using backticks:
+        >>
+
+    Code ] | Click `a href="http://fdik.org/yml/" "this link"`, please!
+
+    p {
+        >>
+        Being in a Block Line Quote «||», you additionally can use the Line Command operator
+        (two backquotes,
+        >>
+        ]  ``).
+    }
+
+    p > This is very interesting to have in YSLT, for example:
+
+    Code {
+        | ||
+        | some code
+        ] ``
+        > apply "myTemplate";\n
+        | some other code
+        | ||
+    }
+
+    h3 id=userop > User defined in-text Operators
+
+    p > You can define short cuts for inserting commands into text by defining operators.
+
+    p   >>
+        Therefore, you need a ¬http://en.wikipedia.org/wiki/Regular_expression regular expression¬
+        for matching text and YML text for replacing with. Here an example, how this is used by YSLT:
+        >>
+
+    Code ] define operator "«(.*?)»" as value "%1";
+
+    p > The RegEx have ¬http://docs.python.org/library/re.html Python syntax¬.
+
+    p   >>
+        In this example all matches to the RegEx will be replaced by the YML text in the «as» clause.
+        The text of the first group in the RegEx will replace the «%1» in the resulting YML text. You
+        can do that for more than one group – just use «%2» for the second group, «%3» for the third
+        one and so on.
+        >>
+
+    p > The «define» keyword can be omitted.
+
+    h3 id=quotethrough > Quote Through ]
+
+    p   >>
+        The ¬http://en.wikipedia.org/wiki/Apple_II_series Apple ][¬ prompt operator just quotes
+        through directly into XML what it gets.
+        >>
+
+    p   >>
+        If the first character of a command is a «<», then quote through is applied
+        automatically.
+        >>
+    
+    p > This is the preferred way to output XML tags directly in YML:
+
+    Code    ||
+            <output me="directly" />
+            
+            ] <!--
+            ]     add some comment, which then appears in XML
+            ] -->
+            ||
+
+    h2 id=including > Including YML files
+
+    p   >>
+        You can include a second YML script file into an existing YML script file
+        at any place using one of the following:
+        >>
+
+    Code    ||
+            include something.yml2
+            include "something else.yml2"
+            include 'anything addionally.yml2'
+            ||
+
+    a name="ymlpath";
+    p   >>
+        If you're not starting the filename with '.' or '/' as in the example above, then
+        if the «YML_PATH» environment variable is set to a colon separated list of directories,
+        these directories are being searched for the given filename. Otherwise, the local
+        directory is searched.
+        >>
+
+    p   >>
+        Filename ¬http://en.wikipedia.org/wiki/Glob_(programming) globbing¬ using «*» and «?»
+        placeholders is supported to include more than one file at a time:
+        >>
+
+    Code | include part*.yml2
+
+    p   >>
+        Filename globbing also can be used reverted; that means, the files are included in reverse
+        order:
+        >>
+
+    Code | include reverse part*.yml2
+
+    p > If there are the files part1.yml, part2.yml and part3.yml, part3.yml is included first now.
+
+    p > To include plain text as text nodes, you can use:
+
+    Code | include text some.txt
+
+    p > To include ready made XML, use:
+
+    Code | include xml some.xml
+
+    h2 id=python > Escaping into Python – the Escape Operator !
+
+    p > You can insert a Python command at any place by using the «!» operator:
+
+    Code | !class X(str): pass
+
+    h3 > Python script Operator !!
+
+    p > You can use the double «!!» to include more than one line of Python code:
+
+    Code    ||
+            !!
+            def fak(n):
+                if n == 0:
+                    return 1
+                else:
+                    return n * fak(n - 1)
+
+            def getName(id):
+                return SQL("select name from customers where id='"+str(id)+"';")[0]
+            !!
+            ||
+
+    h3 > Python generated parameters in Function Calls
+
+    p   >>
+        You may use Python expressions to generate names and/or values in Function Calls.
+        To do so, embed the Python expression in «! ... !»:
+        >>
+
+    Code    ||
+            f x=!fak(5)!;
+            customer name=!getName(42)!;
+            tag !getNextAttributeName()!=42;
+            ||
+
+    h3 > Python generated Function Calls
+
+    p   >>
+        You can generate text with a Python expression, which represents an YML Function Call.
+        The resulting YML function is then executed. Also here, embed the Python expression
+        in «! ... !»:
+        >>
+
+    Code | !getTagName() + " " + getAttrib() + "='" + getValue() + "'"!
+
+    h3 > Using Pointers as values in Python function calls
+
+    p   >>
+        Sometimes it is useful to call a generating Python function using information of a
+        YML Function Call. For that case, there is the «python» statement in YML. You can
+        call there a single Python function using YML Pointers as parameters.
+        >>
+
+    p > This is used in the YSLT specification, for example:
+
+    Code    ||
+            decl apply(select, *indent=1) alias apply-templates {
+                python withIndent(*indent);
+                content;
+            };
+            ||
+
+    h2 id=comments > Comments //, /* */
+
+    p > Comments are written like in Java or C++:
+
+    Code    ||
+            // this is a comment
+            something() { // this is a comment after a tag
+            /* this is some comment, too */
+            ||
+
+    p > After Quoting Operators, comments are not possible. Instead, they're quoted through:
+
+    Code    ||
+            // the following line you'll find in the output document
+            > this text is being output // and this too
+            ||
+
+    div id=bottom {
+        > ¬programming << Using YML 2¬ 
+        > ¬#top ^Top^¬ 
+        > ¬yslt >> show me YSLT¬ 
+        > ¬features.en.yhtml2 (source)¬
+    }
+}

@@ -1,0 +1,10 @@
+<list>
+    <customer>
+        <id>23</id>
+        <name>Kurt Meier</name>
+    </customer>
+    <customer>
+        <id>42</id>
+        <name>Lieschen Schmidt</name>
+    </customer>
+</list>

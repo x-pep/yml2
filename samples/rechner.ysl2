@@ -1,0 +1,14 @@
+include yslt.yml2
+
+decl ip(%value, name="ip", select="'%value'") alias xsl:variable;
+decl rechner(%name, *ip, test="@name = '%name'") alias xsl:when {
+    ip *ip;
+    | ip ist «$ip»
+};
+
+tstylesheet template "/rechner" {
+    choose {
+        rechner "R1", "192.168.1.10";
+        rechner "R2", "192.168.1.11";
+    }
+}

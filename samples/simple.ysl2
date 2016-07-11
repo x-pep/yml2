@@ -1,0 +1,11 @@
+include yslt.yml2
+
+tstylesheet {
+    template "/list" html body table apply "address";
+
+    template "address" tr {
+        td value "name";
+        td value "street";
+        td value "city";
+    }
+}

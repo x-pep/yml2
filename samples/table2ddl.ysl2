@@ -1,0 +1,50 @@
+include yslt.yml2
+
+define operator "“(.*?)”" as call "idl2ddl" with "type", "%1";
+
+tstylesheet {
+    const "idtype", "'INTEGER'";
+
+    template "/" apply "module|class", 0;
+
+    template "module" {
+        param "namespace", "''";
+        choose {
+            when "$namespace=''"
+                apply "module|class", 0 with "namespace", "@name";
+            otherwise
+                apply "module|class", 0 with "namespace", "concat($namespace,'_', @name)";
+        }
+    }
+
+    template "class" {
+        param "namespace", "''";
+
+        choose {
+            when "$namespace=''"    | CREATE TABLE «@name» (
+            otherwise               | CREATE TABLE «$namespace»_«@name» (
+        }
+
+        if "count(attr[@name='id'])=0" |> id «$idtype»`if "count(attr)>0" > , `
+
+        const "name", "@name";
+        foreach "//class[class/@name=$name]" |> «@name»_fk «$idtype»,
+
+        apply "attr";
+
+        | );
+
+        apply "class", 0 with "namespace", "$namespace";
+    }
+
+    template "attr" | «@name» “@type”`if "position() != last()" > , `
+
+    function "idl2ddl" {
+        param "type";
+
+        choose {
+            when "$type='string'"   > VARCHAR
+            when "$type='long'"     > INTEGER
+        }
+    }
+}

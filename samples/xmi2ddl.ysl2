@@ -1,0 +1,34 @@
+include yslt.yml2
+
+tstylesheet xmlns:uml="http://schema.omg.org/spec/UML/2.1",
+            xmlns:xmi="http://schema.omg.org/spec/XMI/2.1" {
+
+    template "/" apply "xmi:XMI/uml:Model/packagedElement", 0;
+
+    template "packagedElement[@xmi:type='uml:Package']" {
+        param "name", "''";
+        if "$name=''"  apply "packagedElement", 0 { with "name", "@name"; }
+        if "$name!=''" apply "packagedElement", 0 { with "name", "concat($name, '_', @name)"; }
+    }
+
+    template "packagedElement[@xmi:type='uml:Class']" {
+        param "name";
+
+        | CREATE TABLE «$name»_«@name» (
+        apply "ownedAttribute";
+        | );
+    }
+
+    template "ownedAttribute[@xmi:type='uml:Property' and type/@xmi:type='uml:PrimitiveType']" {
+        0> «@name»
+        choose {
+            when "type/@href='http://schema.omg.org/spec/UML/2.1/uml.xml#String'"
+                >  VARCHAR
+
+            // [...] for other types, extend when clauses
+        }
+        if "position()!=last()" > ,
+        text "\n";
+    }
+}
+

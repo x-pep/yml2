@@ -1,0 +1,206 @@
+// the YML homepage
+
+include homepage.en.yhtml2
+
+page "YML – Why a Markup Language?!" {
+    h1 > Introduction
+
+    h2 > What is YML?
+
+    p   >>
+        Well, it's the idea not to need to define a grammar first when you want to use a
+        ¬http://en.wikipedia.org/wiki/Domain_Specific_Language Domain Specific Language¬.
+        For that purpose, YML is being translated into XML. Let's make an example.
+        >>
+
+    p   >>
+        Everything which comes close to a C like language, parses without a grammar
+        definition:
+        >>
+
+    p > This:
+
+    Code
+        ||
+        template< class T > T max(T a, T b);
+        ||
+
+    p > Parses to:
+
+    Code
+        ||
+        <?xml version='1.0' encoding='UTF-8'?>
+        <template>
+          <generic>
+            <class/>
+            <T/>
+          </generic>
+          <T>
+            <max>
+              <parm>
+                <T/>
+                <a/>
+              </parm>
+              <parm>
+                <T/>
+                <b/>
+              </parm>
+            </max>
+          </T>
+        </template>
+        ||
+
+    p   >>
+        Instead of defining grammars, you test out and play around until the
+        results are matching your needs. If the resulting tree does not fit
+        what you're expecting, change it by patching the grammar with `code > decl`:
+        >>
+
+    p > This:
+
+    Code
+        ||
+        module A {
+            interface B {
+                attribute long n;
+            };
+        };
+        ||
+
+    p > Parses to:
+
+    Code
+        ||
+        <?xml version='1.0' encoding='UTF-8'?>
+        <module>
+          <A>
+            <interface>
+              <B>
+                <attribute>
+                  <long>
+                    <n/>
+                  </long>
+                </attribute>
+              </B>
+            </interface>
+          </A>
+        </module>
+        ||
+
+    p   >>
+        This does not look like what we want. So we tell YML that
+        we have a module name after the module, an interface name after
+        the interface and type and name after the attribute:
+        >>
+
+    p > This:
+
+    Code
+        ||
+        decl module @name;
+        decl interface @name;
+        decl attribute @type @name;
+
+        module A {
+            interface B {
+                attribute long n;
+            };
+        };
+        ||
+
+    p > Parses to:
+
+    Code
+        ||
+        <?xml version='1.0' encoding='UTF-8'?>
+        <module name="A">
+          <interface name="B">
+            <attribute type="long" name="n"/>
+          </interface>
+        </module>
+        ||
+
+    h2 id=what > What can I do with YML?
+
+    p > With YML you can:
+
+    ul {
+        li p > use a C-like ¬http://en.wikipedia.org/wiki/Domain-specific_language DSL¬ without writing a grammar first
+        li p > generate code out of this ¬http://en.wikipedia.org/wiki/Domain-specific_language DSL¬ using ¬yslt YSLT¬
+        li p > generate code out of ¬http://en.wikipedia.org/wiki/Unified_Modeling_Language UML¬ using ¬yslt YSLT¬ on ¬http://en.wikipedia.org/wiki/XML_Metadata_Interchange XMI¬
+        li p > generate code out of any XML based language like ¬http://en.wikipedia.org/wiki/Scalable_Vector_Graphics SVG¬ using ¬yslt YSLT¬
+        li p > define a ¬http://en.wikipedia.org/wiki/Wiki wiki¬ like language in just a few lines like ¬http://fdik.org/yml/programming#wiki YHTML¬ does
+        li p > replace bad designed and complicated XML languages with simpler C-like ones
+        li p > ... and much more.
+    }
+
+    h2 id=howitworks > How it works: Replacing angle brackets with some Python
+
+    p > Just writing down what I wanted to have instead of XML for a sample:
+
+    Code    ||
+            <list name="List of goods">
+                <head>
+                    <columTitle>
+                        Goods
+                    </columnTitle>
+                    <columnTitle>
+                        Price
+                    </columnTitle>
+                </head>
+                <row>
+                    <value>
+                        Beer
+                    </value>
+                    <value>
+                        20
+                    </value>
+                </row>
+                <row>
+                    <value>
+                        Wine
+                    </value>
+                    <value>
+                        30
+                    </value>
+                </row>
+            </list>
+            ||
+
+    p > Something like that should be more easy, say, like this:
+
+    Code    ||
+            list "List of goods" {
+                head title "Goods", title "Price";
+                row value "Beer", value 20;
+                row value "Wine", value 30;
+            }
+            ||
+
+    h2 id=ylanguages > Y Languages
+
+    p   >>
+        The latter is what I call an Y language – a language specified in YML. How could this be
+        achieved? Well, what's to do? To have the required information, how to build XML from the
+        script above, we need:
+        >>
+
+    ul {
+        li  >>
+            the information, that “list of goods” is an attribute named «name», while «Goods» is
+            the text value of a tag
+            >>
+        li > «title» shout be written out as «columnTitle»
+    }
+
+    p > How to do that? Let's invent a simple definition language for that information:
+
+    Code    ||
+            decl list(name);
+            decl title alias columnTitle;
+            ||
+
+    p > Here you can ¬samples/list.yml2 download the complete list sample¬.
+
+    div id=bottom > ¬#top ^Top^¬ ¬programming >> Using YML 2¬ ¬index.en.yhtml2 (source)¬
+}

@@ -1,0 +1,2 @@
+include yslt.yml2; tstylesheet template "*" { param "pre", "''"; if "text()!=''" | «$pre»/«name()»=«text()»
+apply "*", 0 with "pre", "concat($pre, '/', name())"; }

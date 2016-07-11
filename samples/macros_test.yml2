@@ -1,0 +1,4 @@
+decl blub(%macro, myAttr="something %macro for testing");
+
+testing
+    blub "nice";

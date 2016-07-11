@@ -1,0 +1,1069 @@
+include homepage.en.yhtml2
+
+page "YSLT – XSLT C style" {
+    h1 id=intro > YSLT – an introduction
+
+    p   >>
+        Especially the ¬http://www.w3.org/TR/xslt XSLT¬ programmer can benefit from YML.
+        Usually many attributes of XSLT are annoying in programming praxis:
+        >>
+
+    ul {
+        li  >>
+            the missing separation of ¬http://en.wikipedia.org/wiki/Indent_style indention¬
+            of the XSLT program and indention of the output text
+            >>
+
+        li > the complicated syntax
+
+        li > the lack of good text escaping mechanisms (< and > are not seldom)
+
+        li > ...
+    }
+
+    p > In short, it's ugly ;-)
+
+    p   >>
+        Usually the result is, that many programmers are avoiding XSLT as a programming language.
+        It's a pity, because for processing XML data, it can do much more than “formatting” as
+        “stylesheets”.
+        >>
+
+    p   >>
+        The idea of YSLT now is to supply a simple language, which programmers want to use, to
+        make the features of XSLT accessible to a broader base of people.
+        >>
+
+    p   >>
+        YSLT can be used much simpler; it's just a ¬http://fdik.org/yml/index#ylanguages Y Language¬
+        for XSLT. I'm using it for my blog, here you can ¬http://fdik.org/yblog2.tar.bz2 download YBlog2¬,
+        a simple blogging software in YSLT.
+        >>
+
+    p > Here you can find the ¬yslt.yml2 YSLT specification¬.
+
+    h2 id=hello > Hello, World
+
+    p > In YSLT, the hello world program reads like this:
+
+    Code    ||
+            include yslt.yml2
+            textstylesheet template "/" | hello, world
+            ||
+
+    p   >>
+        The `a href="http://fdik.org/yml/features#including" code > include` line includes the
+        YSLT Y Language declarations. The second line generates an XSLT hello world program.
+        You can generate it using:
+        >>
+
+    Code | % yml2c -o hello.xsl hello.ysl2
+
+    p > This results in the following program:
+
+    Code    ||
+            <xsl:stylesheet xmlns:func="http://exslt.org/functions"
+            xmlns:dyn="http://exslt.org/dynamic" xmlns:str="http://exslt.org/strings"
+            xmlns:math="http://exslt.org/math"
+            xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+            extension-element-prefixes="exsl func str dyn set math"
+            xmlns:set="http://exslt.org/sets" version="1.0"
+            xmlns:exsl="http://exslt.org/common"><xsl:output method="text"/>
+            <xsl:variable name="space" select="'                                 '"/>
+            <xsl:param name="autoindent" select="4"/><xsl:template match="/">
+            <xsl:param name="_indent" select="0"/><xsl:value-of
+            select="substring($space, 1, $_indent+0*$autoindent)"/>hello, world
+            </xsl:template></xsl:stylesheet>
+            ||
+
+    p   >>
+        You can execute this program with any
+        ¬http://en.wikipedia.org/wiki/XML_template_engine XSL processor¬, for example the Free Software
+        ¬http://xmlsoft.org/XSLT/xsltproc2.html xsltproc¬.
+        >>
+    
+    Code    ||
+            % yml2c -o hello.xsl hello.ysl2
+            % echo '<empty/>' > empty.xml          
+            % xsltproc hello.xsl empty.xml 
+            hello, world
+            % _
+            ||
+
+    p   >>
+        Or you can just use ¬toolchain#processor yml2proc¬:
+        >>
+
+    Code    ||
+            % yml2proc -My hello.ysl2
+            hello, world
+            % _
+            ||
+
+    h2 id=programming > Programming in YSLT
+
+    p   >>
+        Because YSLT is just a ¬index#ylanguages Y Language¬ for XSLT, you can do anything with YSLT
+        you can do with XSLT in just nicer syntax ;-) To read what XSLT is all about, I recommend 
+        ¬http://www.w3.org/TR/xslt the official W3C documentation for XSLT¬.
+        >>
+
+    p   >>
+        So this document is just an beginners guide, if you want to understand XSLT completely,
+        better read the ¬http://www.w3.org W3C¬ stuff.
+        >>
+
+    h3 > Programming YSLT means programming with a pure functional language.
+
+    p   >>
+        Lovers of ¬http://en.wikipedia.org/wiki/Lisp_(programming_language) Lisp¬ or
+        ¬http://www.haskell.org/ Haskell¬ will not see any problems. But many programmers are used to
+        have a programming language with a
+        ¬http://en.wikipedia.org/wiki/Procedural_programming procedural imperative paradigma¬ like
+        ¬http://java.sun.com Java¬,
+        ¬http://en.wikipedia.org/wiki/C_(programming_language) C¬/¬http://en.wikipedia.org/wiki/C++ C++¬
+        or ¬http://www.python.org Python¬. Why should they use a
+        ¬http://en.wikipedia.org/wiki/Functional_programming functional¬ language?
+        >>
+
+    p   >>
+        Actually, if a functional language is practical or not, depends of what's to do – “the
+        right tool for the task”, one could say.
+        >>
+
+    p   >>
+        Because processing XML data means traversing a (document) tree,
+        ¬http://en.wikipedia.org/wiki/Recursion recursive¬ algorithms are a clear advantage.
+        And this is the reason, why choosing a functional language is a good choice for that job.
+        >>
+
+    p   >>
+        It's a little bit like with ¬http://en.wikipedia.org/wiki/SQL SQL¬ – for it's job, it's
+        excellent, but no-one wants to write a complete application in SQL (and also not in one
+        of the Turing-complete SQL extension languages like
+        ¬http://www.oracle.com/technology/tech/pl_sql/index.html PL/SQL¬).
+        >>
+
+    h3 id=htmlgen > Generating HTML out of a DSL
+
+    p   >>
+        Of course, you can use YSLT as you would use XSLT. Let's say, you have data in XML
+        documents, and you want to have an excerpt out of this data. This is a common task,
+        comparable to «SELECT» data out of an SQL database. But we have no database, we have
+        something like this file customers.yml2:
+        >>
+
+    Code    ||
+            decl customer(*id, *name) { id *id, name *name };
+
+            list {
+                customer 23, "Kurt Meier";
+                customer 42, "Lieschen Schmidt";
+            }
+            ||
+
+    p   >>
+        Let's say, we want to output this into an ¬http://en.wikipedia.org/wiki/XHTML XHTML¬ document,
+        where the list is showed as a table. Then we would do the following:
+        >>
+
+    p > The XHTML document should be like the following and include the list in the body:
+
+    Code    ||
+            include yslt.yml2
+
+            stylesheet {
+                template "/" html {
+                    head title "Customer List";
+                    body apply "list";
+                }
+            ||
+
+    p   >>
+        In the example above, stylesheet declares the main program. Then we define a template, which
+        is executed automatically starting reading the root «'/'» of the document tree of the XML
+        document we're processing.
+        >>
+
+    p > Using the XML document as input, we're creating this HTML tree:
+
+    Code    ||
+            <html>
+                <head>
+                    <title>Customer List</title>
+                </head>
+                <body>
+
+                <!-- ... ->
+
+                </body>
+            </html>
+            ||
+
+    p > How do we create the list? Well, let's use a table with customers:
+
+    Code |     template "list" table apply "customer";
+
+    p   >>
+        What to do per customer? Well, generate a table row with two columns, one for «id» and one
+        for «name»:
+        >>
+
+    Code    ||
+                template "customer" tr {
+                    td value "id";
+                    td value "name";
+                }
+            }
+            ||
+
+    p > That was it. We now can run our small program:
+
+    Code | % yml2proc -y customer.ysl2 -x customer.xml -o customer.html -P
+
+    p > The result looks like this:
+
+    Code    ||
+            % cat customer.html 
+            <?xml version="1.0"?>
+            <html>
+              <head>
+                <title>Customer List</title>
+              </head>
+              <body>
+                <table>
+                  <tr>
+                    <td>23</td>
+                    <td>Kurt Meier</td>
+                  </tr>
+                  <tr>
+                    <td>42</td>
+                    <td>Lieschen Schmidt</td>
+                  </tr>
+                </table>
+              </body>
+            </html>
+            % _
+            ||
+
+    p > Here you can download ¬samples/customer.ysl2 the complete program¬.
+
+    h3 id=codegen > How to generate code with YSLT
+
+    p > Generating code is easy with YSLT, if you follow these steps:
+
+    ol {
+        li > design the software you want to generate using patterns and write that in a DSL
+        li > write target code once for each pattern
+        li > deconstruct a compiler for the target code for each pattern
+        li > fine tune until the diff is empty
+    }
+
+    p   >>
+        Let's test by example. First let's say, we have a pattern of entities we want
+        to implement as Java beans. The enities in our DSL are:
+        >>
+
+    Code    ||
+            decl entity +name;
+            decl attr +type +name;
+            decl aggregates +entity;
+
+            structure {
+                entity Customer {
+                    attr String name;
+                    attr int creditLimit;
+                    aggregates Order;
+                }
+
+                entity Order {
+                    attr String no;
+                    attr String description;
+                    attr int amount;
+                }
+            }
+            ||
+
+    p   >>
+        How to write that in a Java Program? Well, following the second step, we're
+        writing our target code manually; for this simple sample, let's be naive and
+        save the following into a file named Customer.java.target:
+        >>
+
+    Code    ||
+            import java.util.Vector;
+            import java.util.Collections;
+            import base.Entity;
+
+            class Customer extends Entity {
+                Customer {
+                    id = genId();
+                }
+
+                // attribute name
+                
+                private String name;
+                public String getName() {
+                    return name;   
+                }
+                public void setName(String value) {
+                    name = value;
+                }
+ 
+                // attribute creditLimit
+
+                private int creditLimit;
+                public int getCreditLimit() {
+                    return creditLimit;   
+                }
+                public void setCreditLimit(int value) {
+                    creditLimit = value;
+                }
+
+                // Order aggregation
+
+                protected Vector orderList = new Vector();
+                void addOrder(Order entity) {
+                    orderList.add(entity);
+                }
+                void removeOrder(Order entity) {
+                    orderList.remove(entity);
+                }
+                Iterator orderIterator() {
+                    return orderList.iterator();
+                }
+            }
+            ||
+
+    p   >>
+        The third step does most of the work. First we cite this code
+        into gen_entity.ysl2 and create the basic form of an YSLT script:
+        >>
+
+    Code    ||
+            include yslt.yml2
+
+            tstylesheet {
+                template "/" {
+                    | import java.util.Vector;
+                    | import java.util.Collections;
+                    | import base.Entity;
+                    | 
+                    | class Customer extends Entity {
+                    |     Customer {
+                    |         id = genId();
+                    |     }
+                    | 
+                    |     // attribute name
+                    |     
+                    |     private String name;
+                    |     public String getName() {
+                    |         return name;   
+                    |     }
+                    |     public void setName(String value) {
+                    |         name = value;
+                    |     }
+                    | 
+                    |     // attribute creditLimit
+                    | 
+                    |     private int creditLimit;
+                    |     public int getCreditLimit() {
+                    |         return creditLimit;   
+                    |     }
+                    |     public void setCreditLimit(int value) {
+                    |         creditLimit = value;
+                    |     }
+                    | 
+                    |     // Order aggregation
+                    | 
+                    |     protected Vector orderList = new Vector();
+                    |     void addOrder(Order entity) {
+                    |         orderList.add(entity);
+                    |     }
+                    |     void removeOrder(Order entity) {
+                    |         orderList.remove(entity);
+                    |     }
+                    |     Iterator orderIterator() {
+                    |         return orderList.iterator();
+                    |     }
+                    | }
+                }
+            }
+            ||
+
+    p   >>
+        Now for the deconstruction. I think, it'll be best, if we
+        ¬#edocument create a .java file for each entity¬.
+        So we're moving the whole thing into a template for each entity
+        creating a file, and we're applying this for each entity using the name of each
+        Entity as parameter. We're adding some distinction of cases, too.
+        >>
+
+    p   >>
+        When we apply, the indention system of YSLT will add an indention level, so we can
+        take out rendundant whitespace; for the first apply we don't want this, so we're
+        giving the number 0 as the indention level.
+        >>
+
+    p   >>
+        In attributes, braces «{…}» let us insert the value of an XPath expression into our
+        DSL, while inside quoted text the same is done by the ¬#angledouble angle double quotes¬
+        `] <code>&#xab…&#xbb</code>`:
+        >>
+
+    Code    ||
+            include yslt.yml2
+
+            tstylesheet {
+                template "/structure" apply "Entity", 0;
+
+                template "Entity" document "{@name}.java" {
+                    if "aggregates" {
+                        | import java.util.Vector;
+                        | import java.util.Collections;
+                    }
+
+                    | import base.Entity;
+                    | 
+                    | class `] &#xab`@name`] &#xbb` extends Entity {
+                    |     `] &#xab`@name`] &#xbb` {
+                    |         id = genId();
+                    |     }
+                    | 
+            [...]
+                    |         orderList.remove(entity);
+                    |     }
+                    |     Iterator orderIterator() {
+                    |         return orderList.iterator();
+                    |     }
+                    | }
+                }
+            }
+            ||
+
+    p   >>
+        Well, not bad. Now for the pattern of an attribute and an aggregation, respectively.
+        >>
+
+    Code    ||
+            include yslt.yml2
+
+            tstylesheet {
+                template "/structure" apply "Entity";
+
+                template "Entity" document "{@name}.java" {
+                    if "aggregates" {
+                        | import java.util.Vector;
+                        | import java.util.Collections;
+                    }
+
+                    | import base.Entity;
+                    | 
+                    | class `] &#xab`@name`] &#xbb` extends Entity {
+                    |     `] &#xab`@name`] &#xbb` {
+                    |         id = genId();
+                    |     }
+                    | 
+
+                    apply "attr|aggregates";
+
+                    | }
+                }
+
+                template "attr" {
+                    |
+                    | // attribute `] &#xab`@name`] &#xbb`
+                    |
+                    | private `] &#xab`@type`] &#xbb` `] &#xab`@name`] &#xbb`;
+                    | public `] &#xab`@type`] &#xbb` get`] &#xab`@name`] &#xbb`() {
+                    |     return `] &#xab`@name`] &#xbb`;
+                    | }
+                    | public void set`] &#xab`@name`] &#xbb`(`] &#xab`@type`] &#xbb` value) {
+                    |     `] &#xab`@name`] &#xbb` = value;
+                    | }
+                }
+                
+                template "aggregates" {
+                    |
+                    | // `] &#xab`@entity`] &#xbb` aggregation
+                    | 
+                    | protected Vector `] &#xab`@entity`] &#xbb`List = new Vector();
+                    | void add`] &#xab`@entity`] &#xbb`(`] &#xab`@entity`] &#xbb` entity) {
+                    |     `] &#xab`@entity`] &#xbb`List.add(entity);
+                    | }
+                    | void remove`] &#xab`@entity`] &#xbb`(`] &#xab`@entity`] &#xbb` entity) {
+                    |     `] &#xab`@entity`] &#xbb`List.remove(entity);
+                    | }
+                    | Iterator `] &#xab`@entity`] &#xbb`Iterator() {
+                    |     return `] &#xab`@entity`] &#xbb`List.iterator();
+                    | }
+                }
+            }
+            ||
+
+    p   >>
+        As you can see, we're deconstructing step by step. This is a good idea to get
+        into code generation with YSLT, but it remains a good idea even for the advanced
+        programmer: it keeps a clear view on what's happening.
+        >>
+
+    p   >>
+        In the last step, test it out and make a diff to your target code. You will see
+        that our example needs some beautifying: in Java, camel case is important and
+        makes you some work to revert characters to uppercase or lowercase, respectively.
+        For that work you'll see that ¬http://www.w3.org/TR/xpath/#function-translate XPath's translate() function¬ is a little bit ugly ;-)
+        So we're defining an ¬features#userop operator¬ for that at the top of the file:
+        >>
+
+    Code    ||
+            define operator "“(.*?)”" as call "ucase" with "text", "%1";
+            ||
+
+    p   >>
+        Inside the template, we're defining the ucase function:
+        >>
+
+    Code    ||
+                function "ucase" {
+                    param "text";
+
+                    value "translate(substring($text,1,1),'abcdefghijklmnopqrstuvwxyz','ABCDEFGHIJKLMNOPQRSTUVWXYZ')";
+                    value "substring($text, 2)";
+                }
+            }
+            ||
+
+    p   >>
+        Now we can replace one quoting with another; have a look at the getter and setter 
+        methods:
+        >>
+
+    Code    ||
+            include yslt.yml2
+
+            define operator "“(.*?)”" as call "ucase" with "text", "%1";
+
+            tstylesheet {
+                template "/structure" apply "Entity";
+
+            [...]
+
+                template "attr" {
+                    |
+                    | // attribute `] &#xab`@name`] &#xbb`
+                    |
+                    | private `] &#xab`@type`] &#xbb` `] &#xab`@name`] &#xbb`;
+                    | public `] &#xab`@type`] &#xbb` get“@name”() {
+                    |     return `] &#xab`@name`] &#xbb`;
+                    | }
+                    | public void set“@name”(`] &#xab`@type`] &#xbb` value) {
+                    |     `] &#xab`@name`] &#xbb` = value;
+                    | }
+                }
+
+            [...]
+
+                function "ucase" {
+                    param "text";
+
+                    value "translate(substring($text,1,1),'abcdefghijklmnopqrstuvwxyz','ABCDEFGHIJKLMNOPQRSTUVWXYZ')";
+                    value "substring($text, 2)";
+                }
+            }
+            ||
+
+    p   >>
+        Well, the rest is a pure laborious task ;-) Feel free to complete. And: use diff!
+        >>
+
+    h3 id=ddlgen > A more advanced example: generating SQL DDL out of an UML diagram
+
+    p   >>
+        Well, now for something real ;-) This is a very common task: somebody models
+        with an ¬http://en.wikipedia.org/wiki/Class_diagram UML class diagram¬, and you want
+        to have SQL ¬http://en.wikipedia.org/wiki/Data_Definition_Language DDL¬, which generates
+        a matching database structure.
+        >>
+
+    p > Let's go:
+
+    p   >>
+        First, lets use a stylesheet, which declares the needed
+        ¬http://www.w3.org/TR/REC-xml-names/ XMI namespaces¬:
+        >>
+
+    Code    ||
+            include yslt.yml2
+
+            tstylesheet xmlns:uml="http://schema.omg.org/spec/UML/2.1",
+                        xmlns:xmi="http://schema.omg.org/spec/XMI/2.1" {
+            ||
+
+    p > Now, search the Model for all content:
+
+    Code |    template "/" apply "xmi:XMI/uml:Model/packagedElement", 0;
+
+    p   >>
+        We're translating ¬http://en.wikipedia.org/wiki/Package_(UML) UML Packages¬ into
+        underscore separated prefixes:
+        >>
+
+    Code    ||
+                template "packagedElement[@xmi:type='uml:Package']" {
+                    param "name", "''";
+                    if "$name=''"  apply "packagedElement", 0 { with "name", "@name"; }
+                    if "$name!=''" apply "packagedElement", 0 { with "name", "concat($name, '_', @name)"; }
+                }
+
+            ||
+
+    p > Each Class is represented by a table in the database:
+
+    Code    ||
+                template "packagedElement[@xmi:type='uml:Class']" {
+                    param "name";
+
+                    | CREATE TABLE «$name»_«@name» (
+                    apply "ownedAttribute";
+                    | );
+                }
+            ||
+
+    p   >>
+        Finally, for each different data type for an attribute we're outputting different fields
+        with different types:
+        >>
+
+    Code    ||
+                template "ownedAttribute[@xmi:type='uml:Property' and type/@xmi:type='uml:PrimitiveType']" {
+                    0> «@name»
+                    choose {
+                        when "type/@href='http://schema.omg.org/spec/UML/2.1/uml.xml#String'"
+                            >  VARCHAR
+
+                        // [...] for other types, extend when clauses
+                    }
+                    if "position()!=last()" > ,
+                    text "\\n";
+                }
+            }
+            ||
+
+    p > Our little sample only supports «VARCHAR», but it is an easy game to play to complete that.
+
+    p   >>
+        Here you can download the ¬samples/xmi2ddl.ysl2 XMI 2 DDL compiler sample¬. I used
+        ¬http://bouml.free.fr/ BOUML¬ to create a small ¬samples/demo.xmi UML sample file¬
+        as ¬http://www.omg.org/spec/XMI/ XMI 2.1¬.
+        >>
+
+    p > To compile that, use:
+
+    Code    ||
+            % yml2proc -y xmi2ddl.ysl2 -x demo.xmi 
+            CREATE TABLE demo_Customer (
+                id VARCHAR,
+                name VARCHAR
+            );
+            % _
+            ||
+
+    p   >>
+        In the samples directory you'll find
+        ¬samples/xmi2ddl.uml2 a prettier solution¬ using ¬samples/uml.yml2 some declares to prettify¬.
+        >>
+
+    h1 id=features > Features of YSLT
+
+    p   >>
+        Because YSLT just generates XSLT programs, it will be a good idea to read the
+        ¬http://www.w3.org/TR/xslt XSLT Documentation¬ as well as the
+        ¬http://www.w3.org/TR/xpath XPath Documentation¬.
+        >>
+
+    p   >>
+        In the following, you find a ¬#functionlist List of YSLT Functions¬ and a
+        ¬#operatorlist List of YSLT Operators¬.
+        >>
+
+    h2 id=functionlist > List of YSLT Functions
+
+    h3 > apply(select, *indent=1)
+
+    p   >>
+        Generates the «<xsl:apply-templates />»
+        ¬http://www.w3.org/TR/xslt#section-Applying-Template-Rules tag¬. The «*indent» pointer gives
+        the number of indention levels to add (default: 1) for the Indention System.
+        >>
+
+    p i > Example:
+
+    Code | apply "attr|aggregation", mode=define;
+
+    h3 id=assert > assert(test, msg)
+
+    p   >>
+        Generates «<xsl:value-of select="yml:assert(test, msg)"». See the ¬#ymlassert yml:assert() XPath extension¬.
+        This function does not generate anything when not being called by ¬toolchain#processor ysltproc¬
+        with the --debug switch.
+        >>
+
+    h3 > attrib(name, namespace)
+
+    p > Generates the «<xsl:attribute />» ¬http://www.w3.org/TR/xslt#creating-attributes tag¬.
+
+    h3 > call(name)
+
+    p   >>
+        Generates the «<call-template />» ¬http://www.w3.org/TR/xslt#named-templates tag¬.
+        Used to call a «function()».
+        >>
+
+    p i > Example:
+
+    Code | call "ucase" with "text", "$name";
+
+    h3 > choose()
+
+    p   >>
+        Generates the «<xsl:choose />»
+        ¬http://www.w3.org/TR/xslt#section-Conditional-Processing-with-xsl:choose tag¬.
+        Use in a «choose() ... when()... otherwise()...» structure.
+        >>
+
+    p i > Example:
+
+    Code    ||
+            choose {
+                when "$id=1"
+                    > yes
+                when "$id=2"
+                    > no
+                otherwise
+                    error "invalid id";
+            }
+            ||
+
+    h3 > comment()
+
+    p > Generates the «<xsl:comment />» ¬http://www.w3.org/TR/xslt#section-Creating-Comments tag¬.
+
+    p i > Example:
+
+    Code | comment "this comment will remain in XML";
+
+    h3 > const(name, select)
+
+    p > Generates the «<xsl:variable />» ¬http://www.w3.org/TR/xslt#variables tag¬.
+
+    p i > Example:
+
+    Code | const "pi", 3.14;
+
+    h3 > copy(select)
+
+    p > Generates the «<xsl:copy-of />» ¬http://www.w3.org/TR/xslt#copy-of tag¬.
+
+    p i > Example:
+
+    Code | copy ".";
+
+    h3 id=debug > debug(msg)
+
+    p   >>
+        Generates «<xsl:value-of select="yml:debug(msg)"». See the ¬#ymldebug yml:debug() XPath extension¬.
+        This function does not generate anything when not being called by ¬toolchain#processor ysltproc¬
+        with the --debug switch.
+        >>
+
+    h3 > def(name)
+
+    p   >>
+        Generates the ¬http://www.exslt.org EXSLT¬ «<func:funcion />»
+        ¬http://www.exslt.org/func/elements/function/ tag¬.
+        >>
+
+    h3 id=edocument > document(href, method)
+
+    p   >>
+        Generates the ¬http://www.exslt.org EXSLT¬ «<exsl:document />»
+        ¬http://www.exslt.org/exsl/elements/document/ tag¬.
+        >>
+
+    p i > Example:
+
+    Code    ||
+            template "entity" document "{@name}.java" {
+                […]
+            }
+            ||
+
+    h3 > element(name, namespace)
+
+    p   >>
+        Generates the «<xsl:element />»
+        ¬http://www.w3.org/TR/xslt#section-Creating-Elements-with-xsl:element tag¬.
+        >>
+
+    h3 > error()
+
+    p   >>
+        Generates the «<xsl:message />» ¬http://www.w3.org/TR/xslt#message tag¬
+        with attribute «terminate» set to "yes".
+        >>
+
+    h3 > estylesheet(*output="xml")
+
+    p   >>
+        Does the same as «stylesheet()», but additionally declares the ¬http://www.exslt.org/ EXSLT¬
+        functions of the groups «exsl», «func», «str», «dyn», «set» and «math» and declares the
+        corresponding name spaces.
+        >>
+
+    h3 > for(select)
+
+    p > Generates the «<xsl:for-each />» ¬http://www.w3.org/TR/xslt#for-each tag¬.
+
+    p i > Example:
+
+    Code | for "../structure[@name='hello'" > «@type»
+
+    h3 > foreach(select)
+
+    p > Same as «for()».
+
+    h3 > function(name)
+
+    p   >>
+        Generates the «<xsl:template />» ¬http://www.w3.org/TR/xslt#named-templates tag¬.
+        Used by calling with «call()».
+        >>
+
+    p i > Example:
+
+    Code    ||
+            function "ucase" {
+                param "text";
+
+                value "translate(substring($text,1,1),'abcdefghijklmnopqrstuvwxyz','ABCDEFGHIJKLMNOPQRSTUVWXYZ')";
+                value "substring($text, 2)";
+            }
+            ||
+
+    h3 > if(test)
+
+    p   >>
+        Generates the «<xsl:if />»
+        ¬http://www.w3.org/TR/xslt#section-Conditional-Processing-with-xsl:if tag¬.
+        >>
+
+    p i > Example:
+
+    Code | if "position()<last()" > , 
+
+    h3 > import(href)
+
+    p > Generates the «<xsl:import />» ¬http://www.w3.org/TR/xslt#import tag¬.
+
+    h3 > key(name, match, use)
+
+    p > Generates the «<xsl:key />» ¬http://www.w3.org/TR/xslt#key tag¬.
+
+    h3 > message()
+
+    p > Generates the «<xsl:message />» ¬http://www.w3.org/TR/xslt#message tag¬.
+
+    h3 > otherwise()
+
+    p   >>
+        Generates the «<xsl:otherwise />»
+        ¬http://www.w3.org/TR/xslt#section-Conditional-Processing-with-xsl:choose tag¬.
+        Use in a «choose() ... when()... otherwise()...» structure.
+        >>
+
+    h3 > output(method)
+
+    p > Generates the «<xsl:output />» ¬http://www.w3.org/TR/xslt#output tag¬.
+
+    h3 > param(name, select)
+
+    p > Generates the «<xsl:param />» ¬http://www.w3.org/TR/xslt#variables tag¬.
+
+    p i > Example:
+
+    Code | param "x", 42;
+
+    h3 > processing(name)
+
+    p   >>
+        Generates the «<xsl:processing-instruction />»
+        ¬http://www.w3.org/TR/xslt#section-Creating-Processing-Instructions tag¬.
+        >>
+
+    h3 > raw()
+
+    p   >>
+        Generates the «<xsl:text />» ¬http://www.w3.org/TR/xslt#section-Creating-Text tag¬.
+        Sets the attribute «disable-output-escaping» to "yes".
+        >>
+
+    h3 > result(select)
+
+    p   >>
+        Generates the ¬http://www.exslt.org EXSLT¬ «<func:result />»
+        ¬http://www.exslt.org/func/elements/result/ tag¬.
+        >>
+
+    h3 > stylesheet(*output="xml")
+
+    p   >>
+        Generates the XSLT «<stylesheet />» ¬http://www.w3.org/TR/xslt#stylesheet-element tag¬.
+        Additionally generates an «<output />» ¬http://www.w3.org/TR/xslt#output tag¬
+        in the body, with attribute «method» set to the value of the pointer «*output» (default: "xml").
+        >>
+
+    p > The content you're giving is placed in the body after the «<output />» tag.
+
+    p > The «version» attribute is set to "1.0" and XML namespace «xsl» is correctly defined.
+
+    p   >>
+        In short: use for a stylesheet, just give the output type as parameter, if you don't want to
+        to generate XML but HTML ("html") oder plain text ("text").
+        >>
+
+    p > «stylesheet()» additionally generates tags for the Indention System.
+
+    h3 > template(match)
+
+    p   >>
+        Generates the «<xsl:template />» ¬http://www.w3.org/TR/xslt#section-Defining-Template-Rules tag¬.
+        Additionally generates tags for the Indention System.
+        >>
+
+    p i > Example:
+
+    Code    ||
+            template "attr", mode=declare
+                | attribute `] &#xab@type&#xbb` `] &#xab@name&#xbb`;
+            ||
+
+    h3 > text()
+
+    p > Generate the «<xsl:text />» ¬http://www.w3.org/TR/xslt#section-Creating-Text tag¬.
+
+    h3 > textstylesheet()
+
+    p > Same as «estylesheet()», but «*output» is now "text", that means the stylesheet outputs plain text.
+
+    h3 > tstylesheet()
+
+    p > Same as «textstylesheet()».
+
+    h3 > value(select)
+
+    p > Generates the «<xsl:value-of />» ¬http://www.w3.org/TR/xslt#value-of tag¬.
+
+    p i > Example:
+
+    Code | value "@name";
+
+    h3 > warning()
+
+    p   >>
+        Generates the «<xsl:message />» ¬http://www.w3.org/TR/xslt#message tag¬
+        with attribute «terminate» set to "no".
+        >>
+
+    h3 > when()
+
+    p   >>
+        Generates the «<xsl:when />»
+        ¬http://www.w3.org/TR/xslt#section-Conditional-Processing-with-xsl:choose tag¬.
+        Use in a «choose() ... when()... otherwise()...» structure.
+        >>
+
+    h3 > with(name, select)
+
+    p   >>
+        Generates the «<xsl:with-param />»
+        ¬http://www.w3.org/TR/xslt#section-Passing-Parameters-to-Templates tag¬.
+        >>
+
+    p i > Example:
+
+    Code | call "ucase" with "text", "$name";
+
+    h2 id=operatorlist > List of YSLT Text Operators
+
+    h3 id="angledouble" > Operator `] <code>&#xab…&#xbb</code>`
+
+    p > Generate YSLT Function Call «value('…')».
+
+    h2 id=xpathext > Debugging Functions
+
+    p   >>
+        YML defines two functions in namespace http://fdik.org/yml, which are enabled if the command line
+        option --debug is given in ¬yslt#processor yml2proc¬.
+        >>
+
+    h3 id=ymlassert > yml:assert(test, msg)
+
+    p   >>
+        If XPath expression «test» evaluates to «false()» or to an empty set, XPath expression «msg» is
+        printed to stderr; the compilation then aborts with an error.
+        >>
+
+    p   >>
+        Better don't use it directly, use the ¬#assert assert() YSLT function¬.
+        >>
+
+    h3 id=ymldebug > yml:debug(msg)
+
+    p   >>
+        Prints XPath expression «msg» to stderr.
+        >>
+
+    p   >>
+        Better don't use it directly, use the ¬#debug debug() YSLT function¬.
+        >>
+
+    h2 id=stdlib > Standard Function Library
+
+    p   >>
+        Additionally, you can «include standardlib.ysl2» in the body of your stylesheet.
+        Then you'll have these extra functions:
+        >>
+
+    h3 id=dec2hex > yml:dec2hex(dec, digits=8)
+
+    p   >>
+        Converts number «dec» into a string with a hexadecimal representation filled up to
+        «digits» digits. If you're omitting the second parameter, it is set to 8.
+        >>
+
+    h3 id=hex2dec > yml:hex2dec(hex)
+
+    p   >>
+        Converts the string «hex» consisting of hexadecimal digits into a number.
+        >>
+
+    h3 id=lcase > yml:lcase(text)
+
+    p   >>
+        Converts all uppercase letters of string «text» into lowercase ones.
+        >>
+
+    h3 id=ucase > yml:ucase(text)
+
+    p   >>
+        Converts all lowercase letters of string «text» into uppercase ones.
+        >>
+
+    div id=bottom {
+        a href="features" "<< back to YML Features" " "
+        a href="#top" "^Top^" " "
+        a href="toolchain" "> > explain the Tool Chain" " "
+        a href="yslt.en.yhtml2" "(source)"
+    }
+}
+

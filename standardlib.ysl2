@@ -1,0 +1,55 @@
+function "yml:hex2dec" {
+    param "hex";
+    param "_result", 0;
+    
+    const "hd", "substring($hex, 1, 1)";
+    const "a", """translate($hd, 'ABCDEFabcdef123456789',
+        '123456123456000000000')""";
+
+    const "d" choose {
+        when "$a>0" value "$a + 9";
+        otherwise value "$hd";
+    }
+
+    choose {
+        when "string-length($hex) = 1"
+            value "$_result * 16 + $d";
+        otherwise call "yml:hex2dec"
+            with "hex", "substring($hex, 2, 8)", 
+            with "_result", "$_result * 16 + $d";
+    }
+}
+
+function "yml:dec2hex" {
+    param "dec";
+    param "bits", !16**7!;
+
+    const "v", "floor($dec div $bits)";
+    value "substring('0123456789abcdef', $v + 1, 1)";
+
+    if "$bits > 1" call "yml:dec2hex"
+        with "dec", "$dec - $bits * $v",
+        with "bits", "$bits div 16";
+}
+
+def "yml:dec2hex" {
+    param "dec";
+    param "digits", 8;
+        
+    result call "yml:dec2hex" with "dec", "$dec", with "bits", "math:power(16, $digits - 1)";
+}
+
+def "yml:hex2dec" {
+    param "hex";
+    result call "yml:hex2dec" with "hex", "$hex";
+}
+
+def "yml:lcase" {
+    param "text", "''";
+    result "translate($text, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz')";
+}
+
+def "yml:ucase" {
+    param "text", "''";
+    result "translate($text, 'abcdefghijklmnopqrstuvwxyz', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')";
+}

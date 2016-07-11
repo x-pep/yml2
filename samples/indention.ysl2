@@ -1,0 +1,8 @@
+include yslt.yml2
+
+tstylesheet template "/" {
+    0> something\n
+    1> indent by 1\n
+    indent 1;
+     > also indent by 1\n
+}

@@ -1,0 +1,66 @@
+decl a(href);
+
+decl Code alias pre {
+    code
+        content;
+};
+
+decl ne is a {
+    content;
+    br;
+};
+
+div id=headline {
+    p > YML – Why a Markup Language?!
+    div class=small {
+        "YML 2.5.4 of We Apr 10 2013  –  Copyleft 2007-2013, "
+        a "http://blog.fdik.org", "Volker Birk";
+        " – "
+        a "http://fdik.org/yml2.tar.bz2", "Download YML 2";
+    }
+}
+
+div id=navigation {
+    h1 a "index", "Introduction";
+    ne "index#xml", "XML";
+    ne "index#motivation", "Motivation";
+    ne "index#howitworks", "How it works";
+    ne "index#ylanguages", "Y Languages";
+
+    h1 a "programming", "Using YML 2";
+    ne "programming#wiki", "A Wiki like language";
+    ne "programming#how", "How does that work?";
+    ne "programming#details", "Details, please!";
+    ne "programming#using", "Using it";
+
+    h1 a "features", "Features";
+    ne "features#text", "Text";
+    ne "features#functioncalls", "Function Calls";
+    ne "features#decl", "Declaring Functions";
+    ne "features#quoting", "Quoting Operators";
+    ne "features#including", "Including YML Files";
+    ne "features#python", "Escaping into Python";
+    ne "features#comments", "Comments";
+
+    h1 a "yslt", "YSLT";
+    ne "yslt#intro", "Introduction into YSLT";
+    ne "yslt#hello", "Hello, World";
+    ne "yslt#programming", "Programming in YSLT";
+    ne "yslt#htmlgen", "Generating HTML out of a DSL";
+    ne "yslt#codegen", "Generating Java code out of a DSL";
+    ne "yslt#ddlgen", "Generating SQL DDL out of UML in XMI";
+    ne "yslt#features", "YSLT Features";
+
+    h1 a "toolchain", "Tool Chain";
+    ne "toolchain#compiler", "YML compiler";
+    ne "toolchain#processor", "YML/YSLT processor";
+    ne "toolchain#recommended", "Recommended external tools";
+    ne "http://www.auchdieserschwachsinnmussinsinternet.de/2009-03/#s1236859037", "Windows tool chain";
+    ne "http://fdik.org/yml2.tar.bz2", "Download YML 2";
+    ne "toolchain#downloads", "Download different versions";
+
+    h1 "Misc";
+    ne "gpl-2.0.txt", "License for YML";
+    ne "http://www.pibit.ch/", "Commercial support for YML";
+    ne "http://fdik.org/pyPEG", "YML is using pyPEG";
+}

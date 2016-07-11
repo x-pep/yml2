@@ -1,0 +1,8 @@
+decl list(name);
+decl title alias columnTitle;
+
+list "List of goods" {
+    head title "Goods", title "Price";
+    row value "Beer", value 20;
+    row value "Wine", value 30;
+}

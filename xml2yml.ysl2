@@ -1,0 +1,87 @@
+// xml2yml2.ysl2 version 2.4.4
+
+include yslt.yml2
+
+decl textstylesheet is estylesheet(*output="text") {
+    output *output;
+    const "space", !"'" + " " * 200 + "'"!;
+    param "autoindent", 4;
+    content;
+}, tstylesheet is textstylesheet;
+
+define operator "†" as call "convert" with "tag", "name()";
+
+tstylesheet {
+    function "printNS"
+        for "*/namespace::*[local-name()!='xml']" {
+            > xmlns
+            if "not(local-name()='')"
+                > :«local-name()»
+            > ="«.»"
+            if "position()<last()" > , 
+        }
+    
+    template "/" {
+        if "count(*/namespace::*)>1" {
+            | decl «name(*)»(`call "printNS"`);
+            |
+        }
+        apply "*", 0;
+    }
+
+    template "text()" {
+        param "text", "normalize-space()";
+
+        if "string-length($text)>0" choose {
+            when "contains($text,'\\n')" choose {
+                when "string-length(substring-before($text,'\\n'))<string-length($text)-1" choose {
+                    when "substring($text,string-length($text),1)='\\n'"
+                        > \n||\n«$text»||\n\n
+                    otherwise > > «str:replace($text,'\\n','\\\\n')»\n
+                }
+                otherwise > | «$text»\n
+            }
+            otherwise > > `copy "."`\n
+        }
+    }
+
+    template "*" {
+        0>
+        call "convert" with "tag", "name()";
+        apply "@*";
+
+        choose {
+            when "count(*)=0 and string-length(normalize-space())=0"
+                > ;\n
+            when "count(*)=1 and string-length(normalize-space())=0" {
+                > \n
+                apply "*";
+            }
+            when "count(*)=0 and string-length(normalize-space())>0" {
+                >  
+                apply "text()";
+            }
+            otherwise {
+                >  {\n
+                for "*|text()" {
+                    if "local-name()=''"
+                        if "string-length(normalize-space())>0"
+                            1>
+                    apply ".";
+                }
+                | }
+            }
+        }
+    }
+
+    template "@*" {
+        >  «name()»="«.»"
+        if "position()<last()" > ,
+    }
+
+    function "convert" {
+        param "tag";
+
+        > «translate($tag, '-', '_')»
+    }
+}

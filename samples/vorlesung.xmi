@@ -1,0 +1,185 @@
+<xmi:XMI xmi:version="2.1" xmlns:uml="http://schema.omg.org/spec/UML/2.1" xmlns:xmi="http://schema.omg.org/spec/XMI/2.1">
+	<xmi:Documentation exporter="Bouml" exporterVersion="1.10"/>
+	<uml:Model xmi:type="uml:Model" xmi:id="themodel" name="Bla">
+		<packagedElement xmi:type="uml:Package" xmi:id="BOUML_0x81_22" name ="Bla">
+			<packagedElement xmi:type="uml:Class" name="Customer" xmi:id="BOUML_0x1f417_4" visibility="package" isAbstract="false" >
+				<ownedAttribute xmi:type="uml:Property" name="id" xmi:id="BOUML_0x1f417_1" visibility="private">
+					<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#UnlimitedNatural"/>
+				</ownedAttribute>
+				<ownedAttribute xmi:type="uml:Property" name="orders" xmi:id="BOUML_0x1f417_0" visibility="private" association="BOUML_ASSOC_0x1f417_0" aggregation="none">
+					<type xmi:type="uml:Class" xmi:idref="BOUML_0x1f497_4"/>
+				</ownedAttribute>
+				<ownedAttribute xmi:type="uml:Property" name="name" xmi:id="BOUML_0x1f497_1" visibility="private">
+					<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#String"/>
+				</ownedAttribute>
+			</packagedElement>
+			<packagedElement xmi:type="uml:Class" name="Order" xmi:id="BOUML_0x1f497_4" visibility="package" isAbstract="false" >
+				<ownedAttribute xmi:type="uml:Property" name="" xmi:id="BOUML_0x1f497_0" visibility="private" association="BOUML_ASSOC_0x1f417_0" aggregation="shared">
+					<type xmi:type="uml:Class" xmi:idref="BOUML_0x1f417_4"/>
+				</ownedAttribute>
+				<ownedAttribute xmi:type="uml:Property" name="id" xmi:id="BOUML_0x1f517_1" visibility="private">
+					<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#UnlimitedNatural"/>
+				</ownedAttribute>
+				<ownedAttribute xmi:type="uml:Property" name="desc" xmi:id="BOUML_0x1f597_1" visibility="private">
+					<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#String"/>
+				</ownedAttribute>
+			</packagedElement>
+			<packagedElement xmi:type="uml:StateMachine" xmi:id="BOUML_0x1f417_23" name="Support">
+				<region xmi:type="uml:Region" xmi:id="BOUML_IMPLICIT_REGION_0x1f417_23" name="Bouml_Implicit_Region">
+					<subvertex xmi:type="uml:State" xmi:id="BOUML_0x1f497_23" name="Open">
+						<incoming xmi:idref="BOUML_0x1f417_24"/>
+						<region xmi:type="uml:Region" xmi:id="BOUML_IMPLICIT_REGION_0x1f497_23" name="Bouml_Implicit_Region">
+							<outgoing xmi:idref="BOUML_0x1f497_24"/>
+						</region>
+					</subvertex>
+					<subvertex xmi:type="uml:Pseudostate" xmi:id="BOUML_0x1f417_28" kind="initial">
+						<outgoing xmi:idref="BOUML_0x1f417_24"/>
+					</subvertex>
+					<subvertex xmi:type="uml:State" xmi:id="BOUML_0x1f517_23" name="Catched">
+						<incoming xmi:idref="BOUML_0x1f497_24"/>
+						<region xmi:type="uml:Region" xmi:id="BOUML_IMPLICIT_REGION_0x1f517_23" name="Bouml_Implicit_Region">
+							<outgoing xmi:idref="BOUML_0x1f517_24"/>
+							<outgoing xmi:idref="BOUML_0x1f617_24"/>
+						</region>
+					</subvertex>
+					<subvertex xmi:type="uml:State" xmi:id="BOUML_0x1f617_23" name="Terminated">
+						<incoming xmi:idref="BOUML_0x1f517_24"/>
+						<region xmi:type="uml:Region" xmi:id="BOUML_IMPLICIT_REGION_0x1f617_23" name="Bouml_Implicit_Region">
+							<outgoing xmi:idref="BOUML_0x1f597_24"/>
+						</region>
+					</subvertex>
+					<subvertex xmi:type="uml:FinalState" xmi:id="BOUML_0x1f517_30" name="Final">
+						<incoming xmi:idref="BOUML_0x1f597_24"/>
+						<incoming xmi:idref="BOUML_0x1f697_24"/>
+					</subvertex>
+					<subvertex xmi:type="uml:State" xmi:id="BOUML_0x1f697_23" name="InProgressLevel1">
+						<incoming xmi:idref="BOUML_0x1f617_24"/>
+						<region xmi:type="uml:Region" xmi:id="BOUML_IMPLICIT_REGION_0x1f697_23" name="Bouml_Implicit_Region">
+							<outgoing xmi:idref="BOUML_0x1f717_24"/>
+							<outgoing xmi:idref="BOUML_0x1f797_24"/>
+						</region>
+					</subvertex>
+					<subvertex xmi:type="uml:State" xmi:id="BOUML_0x1f717_23" name="Solved">
+						<incoming xmi:idref="BOUML_0x1f717_24"/>
+						<incoming xmi:idref="BOUML_0x1f897_24"/>
+						<region xmi:type="uml:Region" xmi:id="BOUML_IMPLICIT_REGION_0x1f717_23" name="Bouml_Implicit_Region">
+							<outgoing xmi:idref="BOUML_0x1f697_24"/>
+						</region>
+					</subvertex>
+					<subvertex xmi:type="uml:State" xmi:id="BOUML_0x1f797_23" name="EscalationLevel2">
+						<incoming xmi:idref="BOUML_0x1f797_24"/>
+						<region xmi:type="uml:Region" xmi:id="BOUML_IMPLICIT_REGION_0x1f797_23" name="Bouml_Implicit_Region">
+							<outgoing xmi:idref="BOUML_0x1f817_24"/>
+						</region>
+					</subvertex>
+					<subvertex xmi:type="uml:State" xmi:id="BOUML_0x1f817_23" name="CatchedLevel2">
+						<incoming xmi:idref="BOUML_0x1f817_24"/>
+						<region xmi:type="uml:Region" xmi:id="BOUML_IMPLICIT_REGION_0x1f817_23" name="Bouml_Implicit_Region">
+							<outgoing xmi:idref="BOUML_0x1f897_24"/>
+						</region>
+					</subvertex>
+				</region>
+				<transition xmi:type="uml:Transition" xmi:id="BOUML_0x1f497_24" source="BOUML_0x1f497_23" target="BOUML_0x1f517_23">
+				</transition>
+				<transition xmi:type="uml:Transition" xmi:id="BOUML_0x1f417_24" source="BOUML_0x1f417_28" target="BOUML_0x1f497_23">
+				</transition>
+				<transition xmi:type="uml:Transition" xmi:id="BOUML_0x1f517_24" name="Joke" source="BOUML_0x1f517_23" target="BOUML_0x1f617_23">
+				</transition>
+				<transition xmi:type="uml:Transition" xmi:id="BOUML_0x1f617_24" source="BOUML_0x1f517_23" target="BOUML_0x1f697_23">
+				</transition>
+				<transition xmi:type="uml:Transition" xmi:id="BOUML_0x1f597_24" source="BOUML_0x1f617_23" target="BOUML_0x1f517_30">
+				</transition>
+				<transition xmi:type="uml:Transition" xmi:id="BOUML_0x1f717_24" source="BOUML_0x1f697_23" target="BOUML_0x1f717_23">
+				</transition>
+				<transition xmi:type="uml:Transition" xmi:id="BOUML_0x1f797_24" source="BOUML_0x1f697_23" target="BOUML_0x1f797_23">
+				</transition>
+				<transition xmi:type="uml:Transition" xmi:id="BOUML_0x1f697_24" source="BOUML_0x1f717_23" target="BOUML_0x1f517_30">
+				</transition>
+				<transition xmi:type="uml:Transition" xmi:id="BOUML_0x1f817_24" name="Level2Catches" source="BOUML_0x1f797_23" target="BOUML_0x1f817_23">
+				</transition>
+				<transition xmi:type="uml:Transition" xmi:id="BOUML_0x1f897_24" source="BOUML_0x1f817_23" target="BOUML_0x1f717_23">
+				</transition>
+			</packagedElement>
+			<packagedElement xmi:type="uml:Class" name="FinancialAccounting" xmi:id="BOUML_0x1fa97_4" visibility="package" isAbstract="false" >
+				<ownedAttribute xmi:type="uml:Property" name="" xmi:id="BOUML_0x1fa17_0" visibility="private" association="BOUML_ASSOC_0x1fa17_0" aggregation="none">
+					<type xmi:type="uml:Class" xmi:idref="BOUML_0x1fb17_4"/>
+				</ownedAttribute>
+			</packagedElement>
+			<packagedElement xmi:type="uml:Class" name="Account" xmi:id="BOUML_0x1fb17_4" visibility="package" isAbstract="false" >
+				<ownedAttribute xmi:type="uml:Property" name="" xmi:id="BOUML_0x1fa97_0" visibility="private" association="BOUML_ASSOC_0x1fa17_0" aggregation="composite">
+					<type xmi:type="uml:Class" xmi:idref="BOUML_0x1fa97_4"/>
+				</ownedAttribute>
+				<ownedAttribute xmi:type="uml:Property" name="" xmi:id="BOUML_0x1fb97_0" visibility="private" association="BOUML_ASSOC_0x1fb17_0" aggregation="shared">
+					<type xmi:type="uml:Class" xmi:idref="BOUML_0x1fb97_4"/>
+				</ownedAttribute>
+			</packagedElement>
+			<packagedElement xmi:type="uml:Class" name="FinTransaction" xmi:id="BOUML_0x1fb97_4" visibility="package" isAbstract="false" >
+				<ownedAttribute xmi:type="uml:Property" name="" xmi:id="BOUML_0x1fb17_0" visibility="private" association="BOUML_ASSOC_0x1fb17_0" aggregation="none">
+					<type xmi:type="uml:Class" xmi:idref="BOUML_0x1fb17_4"/>
+					<lowerValue xmi:type="uml:LiteralString" xmi:id="BOUML_MULTIPLICITY_L_0x1fb17_0" value="2"/>
+					<upperValue xmi:type="uml:LiteralString" xmi:id="BOUML_MULTIPLICITY_U_0x1fb17_0" value="2"/>
+				</ownedAttribute>
+			</packagedElement>
+			<packagedElement xmi:type="uml:Class" name="SingleFinTransaction" xmi:id="BOUML_0x1fc17_4" visibility="package" isAbstract="false" >
+				<generalization xmi:type="uml:Generalization" xmi:id="BOUML_0x1fc97_0" general="BOUML_0x1fb97_4"/>
+				<ownedAttribute xmi:type="uml:Property" name="" xmi:id="BOUML_0x1fd97_0" visibility="private" association="BOUML_ASSOC_0x1fd17_0" aggregation="shared">
+					<type xmi:type="uml:Class" xmi:idref="BOUML_0x1fc97_4"/>
+				</ownedAttribute>
+			</packagedElement>
+			<packagedElement xmi:type="uml:Class" name="FinTransactionBatch" xmi:id="BOUML_0x1fc97_4" visibility="package" isAbstract="false" >
+				<generalization xmi:type="uml:Generalization" xmi:id="BOUML_0x1fc17_0" general="BOUML_0x1fb97_4"/>
+				<ownedAttribute xmi:type="uml:Property" name="" xmi:id="BOUML_0x1fd17_0" visibility="private" association="BOUML_ASSOC_0x1fd17_0" aggregation="none">
+					<type xmi:type="uml:Class" xmi:idref="BOUML_0x1fc17_4"/>
+				</ownedAttribute>
+			</packagedElement>
+			<packagedElement xmi:type="uml:Interface" name="Blub" xmi:id="BOUML_0x1ff17_4" visibility="package" isAbstract="true" >
+				<ownedOperation xmi:type="uml:Operation" name="bla" xmi:id="BOUML_0x1f417_2" visibility="public" isAbstract="false">
+					<ownedParameter name="return" xmi:id="BOUML_return_1" direction="return">
+						<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#Boolean"/>
+					</ownedParameter>
+				</ownedOperation>
+			</packagedElement>
+			<packagedElement xmi:type="uml:Class" name="Class" xmi:id="BOUML_0x1f917_4" visibility="package" isAbstract="false" >
+			</packagedElement>
+			<packagedElement xmi:type="uml:Class" name="Persistant" xmi:id="BOUML_0x1f997_4" visibility="package" isAbstract="false" >
+				<generalization xmi:type="uml:Generalization" xmi:id="BOUML_0x1f917_0" general="BOUML_0x1f917_4"/>
+			</packagedElement>
+			<packagedElement xmi:type="uml:Class" name="Document" xmi:id="BOUML_0x1fa17_4" visibility="package" isAbstract="false" >
+				<generalization xmi:type="uml:Generalization" xmi:id="BOUML_0x1f997_0" general="BOUML_0x1f997_4"/>
+			</packagedElement>
+			<packagedElement xmi:type="uml:Class" name="LoggedTransaction" xmi:id="BOUML_0x1fd17_4" visibility="package" isAbstract="false" >
+				<generalization xmi:type="uml:Generalization" xmi:id="BOUML_0x1fe17_0" general="BOUML_0x1f997_4"/>
+			</packagedElement>
+			<packagedElement xmi:type="uml:Actor" name="Supporter" xmi:id="BOUML_0x1fd97_4" visibility="package" isAbstract="false" >
+			</packagedElement>
+			<packagedElement xmi:type="uml:Actor" name="FirstLevel" xmi:id="BOUML_0x1fe17_4" visibility="package" isAbstract="false" >
+				<generalization xmi:type="uml:Generalization" xmi:id="BOUML_0x1fe97_0" general="BOUML_0x1fd97_4"/>
+			</packagedElement>
+			<packagedElement xmi:type="uml:Actor" name="SecondLevel" xmi:id="BOUML_0x1fe97_4" visibility="package" isAbstract="false" >
+				<generalization xmi:type="uml:Generalization" xmi:id="BOUML_0x1ff17_0" general="BOUML_0x1fd97_4"/>
+			</packagedElement>
+			<packagedElement xmi:type="uml:UseCase" xmi:id="BOUML_0x1f417_5" name="Assigning">
+			</packagedElement>
+			<packagedElement xmi:type="uml:Association" xmi:id="BOUML_ASSOC_0x1f417_0" visibility="private">
+				<memberEnd xmi:idref="BOUML_0x1f417_0"/>
+				<memberEnd xmi:idref="BOUML_0x1f497_0"/>
+			</packagedElement>
+			<packagedElement xmi:type="uml:Association" xmi:id="BOUML_ASSOC_0x1fa17_0" visibility="private">
+				<memberEnd xmi:idref="BOUML_0x1fa17_0"/>
+				<memberEnd xmi:idref="BOUML_0x1fa97_0"/>
+			</packagedElement>
+			<packagedElement xmi:type="uml:Association" xmi:id="BOUML_ASSOC_0x1fb17_0" visibility="private">
+				<memberEnd xmi:idref="BOUML_0x1fb17_0"/>
+				<memberEnd xmi:idref="BOUML_0x1fb97_0"/>
+			</packagedElement>
+			<packagedElement xmi:type="uml:Association" xmi:id="BOUML_ASSOC_0x1fd17_0" visibility="private">
+				<memberEnd xmi:idref="BOUML_0x1fd17_0"/>
+				<memberEnd xmi:idref="BOUML_0x1fd97_0"/>
+			</packagedElement>
+			<packagedElement xmi:type="uml:Association" xmi:id="BOUML_UCAC0_0x1f997_11">
+				<ownedEnd xmi:type="uml:Property" xmi:id="BOUML_AC0_0x1f997_11" type="BOUML_0x1fd97_4" association="BOUML_UCAC0_0x1f997_11"/>
+				<ownedEnd xmi:type="uml:Property" xmi:id="BOUML_UC0_0x1f997_11" type="BOUML_0x1f417_5" association="BOUML_UCAC0_0x1f997_11"/>
+			</packagedElement>
+		</packagedElement>
+	</uml:Model>
+</xmi:XMI>

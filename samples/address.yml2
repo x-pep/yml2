@@ -1,0 +1,13 @@
+list {
+    address {
+        name "Meier";
+        street "Hauptstrasse";
+        city "Heidenheim";
+    }
+
+    address {
+        name "Schmid";
+        street "Wilhelmstrasse";
+        city "Gingen";
+    }
+}

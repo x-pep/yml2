@@ -1,0 +1,9 @@
+include yslt.yml2
+
+tstylesheet {
+    template "/list/*"
+        | INSERT INTO «name()» (`apply "*", 0, mode="names"`) VALUES (`apply "*", mode="values"`);
+    
+    template "*", mode="names" > «name()»`if "position()!=last()" ", "`
+    template "*", mode="values" > '«.»'`if "position()!=last()" ", "`
+}

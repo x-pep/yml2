@@ -1,0 +1,22 @@
+include yslt.yml2
+
+tstylesheet {
+    template "/xsl:stylesheet" {
+        > include yslt.yml2\n\ntstylesheet {\n
+        apply "xsl:template";
+        > }\n
+    }
+    template "xsl:template" choose {
+        when "@match" {
+            | template "«@match»" {
+            |
+            | }
+        }
+        when "@name" {
+            | template "«@name»" {
+            |
+            | }
+        }
+        if "position()!=last()" |
+    }
+}

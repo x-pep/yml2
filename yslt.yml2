@@ -1,0 +1,99 @@
+// YSLT version 2.5.4
+
+!!
+def indent(level):
+    return "value 'substring($space, 1, $_indent+" + str(level) + "*$autoindent)';"
+!!
+
+in exsl decl document(href, method) alias document;
+in func decl def(name) alias function, result(select);
+
+decl debug_off(exclude-result-prefixes="yml");
+
+in xsl {
+    decl _trace_param(%text, name="yml:trace", select='yml:debug("* %text")') alias param;
+    decl _trace_with is _trace_param alias with-param;
+
+    decl param(name, select);
+    decl const(name, select) alias variable, variable is const;
+    decl output(method), key(name, match, use);
+    decl value(select) alias value-of, copy(select) alias copy-of;
+
+    decl indent is value(%level, select='substring($space, 1, $_indent + (%level) * $autoindent)');
+
+    decl stylesheet(
+        *output="xml",
+        version="1.0",
+        xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+    ) {
+        output *output;
+        const "space", !"'" + " " * 200 + "'"!;
+        param "autoindent", 4;
+        content;
+    };
+
+    decl estylesheet is stylesheet (
+        xmlns:exsl='http://exslt.org/common',
+        xmlns:math='http://exslt.org/math',
+        xmlns:func='http://exslt.org/functions',
+        xmlns:str='http://exslt.org/strings',
+        xmlns:dyn='http://exslt.org/dynamic',
+        xmlns:set='http://exslt.org/sets',
+        xmlns:date='http://exslt.org/dates-and-times',
+        extension-element-prefixes='exsl func str dyn set math date'
+    );
+
+    decl textstylesheet is estylesheet(*output="text") {
+        output *output;
+        const "space", !"'" + " " * 200 + "'"!;
+        param "autoindent", 4;
+        xsl:template "text()";
+        content;
+    }, tstylesheet is textstylesheet;
+
+    decl template(match) {
+        _trace_param *_trace_info;
+        param "_indent", 0;
+        content;
+    };
+
+    decl function(name) alias template {
+        _trace_param *_trace_info;
+        param "_indent", 0;
+        content;
+    };
+   
+    decl call(name) alias call-template {
+        _trace_with *_trace_info;
+        content;
+    };
+
+    decl namespace_alias(stylesheet-prefix, result-prefix);
+    decl text, raw(disable-output-escaping='yes') alias text;
+
+    decl with(name, select) alias with-param;
+    decl withIndent(%level, name="_indent", select='$_indent + (%level) * $autoindent') alias with-param;
+
+    decl apply(select, *indent=1) alias apply-templates {
+        _trace_with *_trace_info;
+        withIndent *indent;
+        content;
+    };
+
+    decl choose, when(test), otherwise;
+    decl if(test);
+    decl for(select) alias for-each, foreach is for;
+    decl element(name, namespace);
+    decl attrib(name, namespace) alias attribute, attrib_set(name) alias attribute-set;
+    decl processing(name) alias processing-instruction;
+    decl comment;
+    decl number(value), sort(select), decimal_format(name, decimal-separator=".", grouping-separator=",");
+    decl import(href), fallback;
+    decl message, error is message(terminate='yes'), warning is message(terminate='no');
+
+    decl debug(%text, select='yml:debug(%text)') alias value-of;
+    decl assert(%test, %msg="''", select='yml:assert(%test,%msg)') alias value-of;
+}
+
+define operator "«(.*?)»" as value "%1";
+

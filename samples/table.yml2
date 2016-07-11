@@ -1,0 +1,8 @@
+decl module +name;
+decl class +name;
+decl attr +type +name;
+
+class Table class Data {
+    attr long id;
+    attr string text;
+}

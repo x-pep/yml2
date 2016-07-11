@@ -1,0 +1,9 @@
+include yslt.yml2
+
+tstylesheet {
+    template "/" {
+        debug "'debug output'";
+        assert 0, "'test assertion'";
+        > yes\n
+    }
+}

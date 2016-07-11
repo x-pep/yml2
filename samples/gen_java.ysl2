@@ -1,0 +1,60 @@
+include yslt.yml2
+
+define operator "†(\S+)" as call "printType" with "name", "%1";
+define operator "“(.*?)”" as call "ucase" with "text", "%1";
+
+decl umlstylesheet is tstylesheet (
+    xmlns:uml="http://schema.omg.org/spec/UML/2.1",
+    xmlns:xmi="http://schema.omg.org/spec/XMI/2.1"
+);
+
+umlstylesheet {
+    template "/xmi:XMI/uml:Model"
+        apply "packagedElement", 0;
+
+    template "packagedElement[@xmi:type='uml:Package']" {
+        | package «@name»;
+        |
+        apply "packagedElement", 0;
+    }
+
+    template "packagedElement[@xmi:type='uml:Class']" {
+        | class «@name» {
+        apply "ownedAttribute";
+        | }
+        if "position() != last()" |
+    }
+
+    template "ownedAttribute[@xmi:type='uml:Property' and count(@association)=0]" {
+        | // attribute «@name»
+        |      
+        | public †type get“@name”() {
+        |     return «@name»;
+        | }
+        |      
+        | public void set“@name”(†type value) {
+        |     «@name» = value;
+        | }
+        |      
+        | private †type «@name»;
+        if "position() != last()" |
+    }
+
+    function "ucase" {
+        param "text";
+
+        > «translate(substring($text, 1, 1), 'abcdefghijklmnopqrstuvwxyz', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')»
+        > «substring($text, 2)»
+    }
+
+    function "printType" {
+        param "name";
+
+        choose {
+            when '$name/@href = "http://schema.omg.org/spec/UML/2.1/uml.xml#UnlimitedNatural"'
+                > int
+            when '$name/@href = "http://schema.omg.org/spec/UML/2.1/uml.xml#String"'
+                > String
+        }
+    }
+}

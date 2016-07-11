@@ -1,0 +1,413 @@
+include homepage.en.yhtml2
+
+page "Using YML 2" {
+    p   >>
+        YML 2 is a smart ¬http://en.wikipedia.org/wiki/Template_processor template language¬ and
+        ¬http://en.wikipedia.org/wiki/Domain-specific_language DSL concept¬. This guide will give
+        you a feeling, for what it's worth.
+        >>
+
+    h2 id=wiki > Creating a Wiki like language for writing documentation
+
+    p   >>
+        Let's say, we want to define a small Wiki system, which should be translated from a Wiki
+        like language into HTML. This guide is written in one using YML 2. I call it ƒYHTML. You can
+        view the ¬homepage.en.yhtml2 source code of what you're reading now¬. It's about writing
+        web pages like that:
+        >>
+
+    Code {
+        ||
+        page "Hello, world" {
+            p   ¬features#blockquote >>¬
+                Hello, world! I can link here, say:
+        ||
+        >         
+        ] ¬http://en.wikipedia.org to Wikipedia¬
+        > \n
+        ||
+                ¬features#blockquote >>¬
+
+            p   ¬features#blockquote >>¬
+        ||
+        >         
+        ] This is ƒemphasized. And this is «code».
+        > \n
+        ||
+                ¬features#blockquote >>¬
+        }
+        ||
+    }
+    p   >>
+        Prerequisite: knowing how ¬http://en.wikipedia.org/wiki/Html#Markup HTML¬ works.
+        >>
+
+    h2 id=how > How does that work?
+
+    p   >>
+        YML 2 is a template language. That means, you can define ¬http://en.wikipedia.org/wiki/Recursion recursive¬
+        templates of what's to be generated. This is ¬homepage.en.yhtml2 the code¬; just click on underlined things
+        to get an explanation:
+        >>
+
+    Code {
+        ||
+        ¬features#quotethrough <¬?xml version="1.0" encoding="UTF-8"?¬features#quotethrough >¬
+        ¬features#quotethrough <¬!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+            "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"¬features#quotethrough >¬
+
+        ¬features#decl decl¬ pageContent ¬features#alias alias¬ body ¬features#defaultbody {¬
+            a name¬features#named =¬"top";
+            ¬features#including include¬ ¬heading.en.yhtml2 heading.en.yhtml2¬;
+            div id¬features#named =¬"entries"
+                ¬features#contentfc content¬;
+        ¬features#defaultbody }¬;
+
+        ¬features#decl decl¬ page(¬features#pointer *title¬, lang¬features#defaultattr =¬"en", xml:lang¬features#defaultattr =¬"en", xmlns¬features#defaultattr =¬"http://www.w3.org/1999/xhtml")
+            ¬features#alias alias¬ html ¬features#defaultbody {¬
+            head ¬features#subtree {¬
+                title ¬features#pointer *title¬;
+                meta http-equiv¬features#named =¬"Content-Type", content¬features#named =¬"text/html;charset=UTF-8";
+                link rel¬features#named =¬"stylesheet", type¬features#named =¬"text/css", href¬features#named =¬"format.css";
+            ¬features#subtree }¬
+
+            pageContent
+                ¬features#contentfc content¬;
+        ¬features#defaultbody }¬;
+        ||
+
+        br; > ¬features#userop define operator¬ 
+        ] <a href="http://docs.python.org/library/re.html">"¬\s*(.*?)\s+(.*?)\s*¬"</a>
+        >  ¬features#userop as¬ a href¬features#named =¬"%1" ¬features#quote >¬ %2
+
+        br; > ¬features#userop define operator¬ 
+        ] <a href="http://docs.python.org/library/re.html">"«(.*?)»"</a>
+        >  ¬features#userop as¬ code ¬features#quote >¬ %1
+
+        br; > ¬features#userop define operator¬ 
+        ] <a href="http://docs.python.org/library/re.html">"ƒ(\S+)"</a>
+        >  ¬features#userop as¬ em ¬features#quote >¬ %1
+    }
+
+    h2 id=details > Details, please!
+
+    h3 > Starting with XHTML headers
+
+    p   >>
+        Because HTML headers are boring and annoying, I'm copying them from document to document. And at last,
+        they ended here ;-) If you already have things in angle brackets, you can just add them to your YML 2
+        document “as is”, because everything which starts with an opening angle bracket will be a “give through”
+        for the YML 2 toolchain. So our first two lines are:
+        >>
+
+    Code 
+        ||
+        ¬features#quotethrough <¬?xml version="1.0" encoding="UTF-8"?¬features#quotethrough >¬
+        ¬features#quotethrough <¬!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+            "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"¬features#quotethrough >¬
+        ||
+
+    h3 > Defining the document structure
+
+    p   >>
+        A Webpage usually has a structure: it has a specific title and content. Beside that, technical things
+        have to be encoded. A Webpage in XHTML is XML text, setting xmlns to the right name space. That's how we
+        do that in YML 2:
+        >>
+    
+    Code 
+        ||
+        ¬features#decl decl¬ page(¬features#pointer *title¬, lang¬features#defaultattr =¬"en", xml:lang¬features#defaultattr =¬"en", xmlns¬features#defaultattr =¬"http://www.w3.org/1999/xhtml")
+            ¬features#alias alias¬ html ¬features#defaultbody {¬
+        ||
+
+    p   >>
+        First we ¬features#decl declare¬ the «page» function. It's ¬features#alias aliased to¬ «html», so it will
+        generate a «html» tag, not a «page» tag.
+        >>
+
+    p   >>
+        The first parameter, «*title», is a placeholder for the title of the document. The content of what we give
+        here later will be repeated at any place we're putting «*title» into our template. This technique is called
+        ¬features#pointer Pointers¬.
+        >>
+
+    p   >>
+        The two other attributes have ¬features#defaultattr Default Values¬, so they're generated each time the
+        «page» function will be called.
+        >>
+
+    h3 > The Document content
+
+    p   >>
+        The document content is what is in the «{ ... }» block:
+        >>
+
+    Code
+        ||
+        ¬features#defaultbody {¬
+            head ¬features#subtree {¬
+                title ¬features#pointer *title¬;
+                meta http-equiv¬features#named =¬"Content-Type", content¬features#named =¬"text/html;charset=UTF-8";
+                link rel¬features#named =¬"stylesheet", type¬features#named =¬"text/css", href¬features#named =¬"format.css";
+            ¬features#subtree }¬
+
+            pageContent
+                ¬features#contentfc content¬;
+        ¬features#defaultbody }¬;
+        ||
+
+    p   >>
+        This reflects, that each HTML document has a «head» and a «body» section. Of course, we insert the «*title»
+        pointer value in the «title» tag. Then some meta data and a link to a nice
+        ¬http://en.wikipedia.org/wiki/Cascading_Style_Sheets CSS¬ ;-)
+        >>
+
+    p   >>
+        For the «body» section, we have a little helper function, «pageContent». The function named «content» is
+        a ¬features#contentfc placeholder¬, where the content of the page will be placed, when our «page» function
+        will be called.
+        >>
+
+    h3 > Generating the «body» with the «pageContent» function
+
+    p   >>
+        The «pageContent» function is used for generating the «body» with standard elements; therefore, it's
+        ¬features#alias aliased¬ to «body»:
+        >>
+
+    Code
+        ||
+        ¬features#decl decl¬ pageContent ¬features#alias alias¬ body ¬features#defaultbody {¬
+            a name¬features#named =¬"top";
+            ¬features#including include¬ ¬heading.en.yhtml2 heading.en.yhtml2¬;
+            div id¬features#named =¬"entries"
+                ¬features#contentfc content¬;
+        ¬features#defaultbody }¬;
+        ||
+
+    p   >>
+        It first sets an HTML anchor, so links can reference the top of the page:
+        >>
+
+    Code | a name¬features#named =¬"top";
+       
+    p   >>
+        Then a file with heading and navigation (the menu to the right on the page here) is being
+        ¬features#including included¬:
+        >>
+
+    Code | ¬features#including include¬ ¬heading.en.yhtml2 heading.en.yhtml2¬;
+
+    p   >>
+        At last, the page content is being put in, surrounded by a «div» named «entries», so it can be referenced
+        later, too:
+        >>
+
+    Code    ||
+            div id¬features#named =¬"entries"
+                ¬features#contentfc content¬;
+            ||
+
+    p   >>
+        If you'll have a look on the included ¬heading.en.yhtml2 heading.en.yhtml2¬ file, then you'll see the 
+        the static head and navigation sections hard coded. With the ¬format.css CSS file¬ everything is brought
+        to the right place.
+        >>
+
+    h3 > Defining some operators for the Wiki like language
+
+    p   >>
+        The trick with a Wiki like language is, that one can write plain text, and adding structural things
+        to it, like links i.e.
+        >>
+
+    p   >>
+        So we need language constructs, which let us structure. In YML 2 these are called
+        ¬features#userop User defined in-text Operators¬:
+        >>
+
+    Code {
+        > ¬features#userop define operator¬ 
+        ] <a href="http://docs.python.org/library/re.html">"¬\s*(.*?)\s+(.*?)\s*¬"</a>
+        >  ¬features#userop as¬ a href¬features#named =¬"%1" ¬features#quote >¬ %2
+
+        br; > ¬features#userop define operator¬ 
+        ] <a href="http://docs.python.org/library/re.html">"«(.*?)»"</a>
+        >  ¬features#userop as¬ code ¬features#quote >¬ %1
+
+        br; > ¬features#userop define operator¬ 
+        ] <a href="http://docs.python.org/library/re.html">"ƒ(\S+)"</a>
+        >  ¬features#userop as¬ em ¬features#quote >¬ %1
+    }
+
+    p   >>
+        They look somewhat disturbing, if you're not familiar with
+        ¬http://en.wikipedia.org/wiki/Regular_expression Regex¬, so I will explain.
+        >>
+
+    p   >>
+        First we define a link:
+        >>
+
+    Code {
+        > ¬features#userop define operator¬ 
+        ] <a href="http://docs.python.org/library/re.html">"¬\s*(.*?)\s+(.*?)\s*¬"</a>
+        >  ¬features#userop as¬ a href¬features#named =¬"%1" ¬features#quote >¬ %2
+    }
+
+    p   >>
+        The keyword «define operator» starts the definition. Then there is the Regex:
+        >>
+
+    Code | "¬\s*(.*?)\s+(.*?)\s*¬"
+
+    p {
+        "I decided I want to have the special character " "¬" " surrounding each link like this: "
+        code ] ¬http://en.wikipedia.org go to Wikipedia¬
+        ". This is just like what ¬http://www.mediawiki.org MediaWiki¬ does with brackets; here the "
+        "same would read: «[http://en.wikipedia.org go to Wikipedia]»."
+    }
+
+    p   >>
+        I like using such special characters. This is because I'm using a
+        ¬http://www.apple.com/mac/ Mac¬ and ¬http://en.wikipedia.org/wiki/GNU/Linux GNU/Linux¬.
+        If you're using ¬http://www.microsoft.com/windows/ Windows¬, I really can recommend
+        ¬http://www.autohotkey.com/docs/Hotkeys.htm AutoHotkey¬. It's a great piece of software to expand the
+        keyboard capabilities of Windows (and much more).
+        >>
+
+    p {
+        > How does this Regex stuff work? It's a ¬http://en.wikipedia.org/wiki/Pattern_matching pattern matching¬ language consuming characters with each 
+        > command. Well, we want to have the following: The first thing between the 
+        ] ¬
+        >  markers shell be the link target URL. All other things shell be the name of the link shown. 
+        >>
+        For that case, we're first consuming whitespace with «\s*» – the «\s» means “an arbitrary whitespace
+        character” (like blank, newline, etc.). The asterisk «*» means “some of them or none”, so this
+        consumes all whitespace which is there (and gives no error if there is none).
+        >>
+    }
+
+    p   >>
+        Second, we open a group with parentheses «( )» This first group we can later reference as «%1»
+        when substituting.
+        >>
+
+    p   >>
+        Inside this group, we're telling that we want anything in it, no matter what it is. For this case,
+        we're using a dot «.» which means “any character”, followed by asterisk questionmark «*?», which is 
+        the code for “consume as much as you can, but only up to the next code in the Regex”. The total
+        «(.*?)» consumes the target URL (without checking it).
+        >>
+
+    p   >>
+        Then we're consuming some whitespace again, this time with «\s+». Using a plus «+» instead of an 
+        asterisk «*» or asterisk questionmark «*?» means: there has to be at least one whitespace character.
+        And we want whitespace between the URL and the name, right? ;-)
+        >>
+
+    p   >>
+        Now we're consuming the second group. We're consuming whatever is there – it's the name of the
+        link. We're using another «(.*?)» group for it. It will be group 2, and we can reference it with
+        this in the substitution: «%2».
+        >>
+
+    p {
+        > At last we're consuming redundant whitespace with «\s*», and our Regex is closed by another 
+        ] ¬
+        >  character. And that makes the total Regex:
+    }
+
+    Code ] "¬\s*(.*?)\s+(.*?)\s*¬"
+
+    p   >>
+        So what can we do with it? What we want are «<a href="..." />» tags. And that means, we want to
+        call a function like this: «a href="..." > ...»
+        >>
+
+    p   >>
+        As «href» we want to have the result of group 1,
+        because this is the link target. After the ¬features#quote Quote operator¬ «>» we want to have
+        what is the name of the link, that is the result of group 2. That we can write literally:
+        >>
+
+    Code | a href="%1" > %2
+
+    p   >>
+        Our first User defined in-text Operator is ready :-)
+        >>
+
+    p   >>
+        Maybe you would prefer using brackets. So just do it ;-) Change the Regex to this, and you
+        can use brackets for links like in MediaWiki; we have to escape the brackets «[ ]» with a
+        backslash «\\», because brackets are also codes in Regex, and we don't want the code, we really
+        want brackets:
+        >>
+
+    Code | "\[\s*(.*?)\s+(.*?)\s*\]"
+
+    p   >>
+        The other two operators should now be easy to understand:
+        >>
+
+    Code {
+        > ¬features#userop define operator¬ 
+        ] <a href="http://docs.python.org/library/re.html">"«(.*?)»"</a>
+        >  ¬features#userop as¬ code ¬features#quote >¬ %1
+
+        br; > ¬features#userop define operator¬ 
+        ] <a href="http://docs.python.org/library/re.html">"ƒ(\S+)"</a>
+        >  ¬features#userop as¬ em ¬features#quote >¬ %1
+    }
+
+    p   >>
+        A tip: the code with an upper case letter S «\S» means, that only non-whitespace characters shell
+        be consumed.
+        >>
+
+    h2 id=using > Using it
+
+    p   >>
+        How to write a new web page with our templates? Here's a ¬hello.en.yhtml2 hello world¬. We can use
+        ¬features#blockquote Block Quotes¬ for entering text, and our new self defined operators:
+        >>
+
+    Code {
+        ||
+        ¬features#including include¬ homepage.en.yhtml2
+
+        page "Hello, world" {
+            p   ¬features#blockquote >>¬
+                Hello, world! I can link here, say:
+        ||
+        >         
+        ] ¬http://en.wikipedia.org to Wikipedia¬
+        > \n
+        ||
+                ¬features#blockquote >>¬
+
+            p   ¬features#blockquote >>¬
+        ||
+        >         
+        ] This is ƒemphasized. And this is «code».
+        > \n
+        ||
+                ¬features#blockquote >>¬
+        }
+        ||
+    }
+
+    p   >>
+        The result you can ¬hello see here¬:
+        >>
+
+    iframe src="hello", width="100%", height=300 > ¬hello see here¬
+
+    div id=bottom {
+        > ¬index << back to Introduction¬ 
+        > ¬#top ^Top^¬ 
+        > ¬features >> The Features¬ 
+        > ¬programming.en.yhtml2 (source)¬
+    }
+}

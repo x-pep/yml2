@@ -1,0 +1,23 @@
+include yslt.yml2
+
+tstylesheet {
+    template "module" {
+        | module «name(*)» {
+        apply "*/interface";
+        | };
+    }
+
+    template "interface" {
+        | interface «name(*)» {
+        apply "*/*", mode="func";
+        | };
+    }
+
+    template "*", mode="func"
+        | «name(.)» «name(*)»(`apply "*/*", mode="parms";`);
+
+    template "*", mode="parms" {
+        > «name(.)» «name(*)» «name(*/*)»
+        if "position() != last()" > , 
+    }
+}

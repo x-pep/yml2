@@ -1,0 +1,4 @@
+types {
+    type "string";
+    type "int";
+}

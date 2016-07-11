@@ -1,0 +1,6 @@
+include yslt.yml2
+
+tstylesheet template "*" {
+    | «name()»
+    apply "*";
+}

@@ -1,0 +1,19 @@
+include yslt.yml2
+
+estylesheet {
+    template "/list" cities
+        apply "address[name='Meier']" with "me", ".";
+
+    template "address" {
+        param "me";
+
+        call "f" with "addresses", "$me/address[name='Schmid'] | .";
+    }
+
+    function "f" {
+        param "addresses";
+
+        foreach "$addresses"
+            city value "city";
+    }
+}

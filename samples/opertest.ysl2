@@ -1,0 +1,5 @@
+include yslt.yml2
+
+define operator "π(\w+)" as value "%1", value "%1-19";
+
+tstylesheet template "/" | hello, world π42

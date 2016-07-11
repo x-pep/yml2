@@ -1,0 +1,6 @@
+decl interface +name;
+decl _ +type +name alias func;
+
+interface Test {
+    void f(in string x, out long y);
+}

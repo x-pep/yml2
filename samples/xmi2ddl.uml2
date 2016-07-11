@@ -1,0 +1,23 @@
+include uml.yml2
+
+UML {
+    include uml2sql.yml2
+
+    Root applyPackages;
+
+    Package {
+        param "name", "''";
+        if "$name=''"  apply "packagedElement", 0 { with "name", "@name"; }
+        if "$name!=''" apply "packagedElement", 0 { with "name", "concat($name, '_', @name)"; }
+    }
+
+    Class {
+        param "name";
+
+        | CREATE TABLE «$name»_«@name» (
+        applyAttributes;
+        | );
+    }
+
+    Attribute | «@name» †type`if "position()!=last()" > ,`
+}

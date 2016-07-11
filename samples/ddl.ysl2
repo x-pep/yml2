@@ -1,0 +1,15 @@
+include yslt.yml2
+
+tstylesheet {
+    template "/list" {
+        | CREATE TABLE «name(*)» (
+        
+        apply "*[1]/*";
+
+        | );
+    }
+
+    template "*" {
+        | «name()» VARCHAR`if "position()!=last()" ", "`
+    }
+}

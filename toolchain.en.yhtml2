@@ -1,0 +1,380 @@
+include homepage.en.yhtml2
+
+page "The YML Toolchain" {
+    h1 > The Toolchain
+
+    p   >>
+        There are to possibilities to handle YML files: the YML compiler and the YML/YSLT
+        processor.
+        >>
+
+    h2 id=compiler > The YML compiler
+
+    p   >>
+        The YML ¬http://en.wikipedia.org/wiki/Compiler compiler¬ is a small
+        ¬http://www.python.org Python script¬. It provides the
+        ¬http://en.wikipedia.org/wiki/Command-line_interface command line¬ front end «yml2c».
+        As default, it compiles your ¬http://en.wikipedia.org/wiki/Scripting_language script¬
+        and outputs to ¬http://en.wikipedia.org/wiki/Stdout#Standard_output_.28stdout.29 stdout¬,
+        that usually is the ¬http://en.wikipedia.org/wiki/Computer_terminal terminal¬.
+        Your ¬http://en.wikipedia.org/wiki/Shell_(computing) shell¬ provides options to redirect
+        the output into a ¬http://en.wikipedia.org/wiki/Pipeline_(Unix) pipe¬ or
+        a ¬http://en.wikipedia.org/wiki/Computer_file file¬.
+        >>
+
+    p > So to use it, just enter «yml2c» followed by the filename of your YML script:
+
+    Code | % yml2c myscript.yml2 > myscript.result
+
+    p > The «yml2c» command has the following options:
+
+    h3 > -h, --help
+
+    p > Show a help message and exit.
+
+    h3 > -C, --old-syntax
+
+    p > Use the syntax of YML 2 version 1.x (compatibility mode).
+
+    h3 > -D, --emit-linenumbers
+
+    p > Emit line numbers into the resulting XML for debugging purposes.
+
+    h3 > -E ENCODING, --encoding ENCODING
+
+    p > encoding of input files (default: UTF-8)
+
+    h3 > -I INCLUDE_PATH, --include=INCLUDE_PATH
+
+    p { "Precede " code > ¬features#ymlpath YML_PATH¬
+      " by a colon separated " code "INCLUDE_PATH"; " to search for include files." }
+
+    h3 > -m, --omit-empty-parm-tags
+    
+    p   >>
+        Does nothing (only there for compatibility with older versions of «yml2c»).
+        >>
+
+    h3 > -n NORMALIZATION, --normalization=NORMALIZATION
+
+    p   >>
+        Unicode normalization (none, NFD, NFKD, NFC, NFKC, FCD, default is NFC)
+        >>
+
+    h3 > -o FILE, --output=FILE
+
+    p > Don't output to stdout, instead place output in file «FILE».
+
+    h3 > -p, --parse-only
+
+    p   >>
+        ¬http://fdik.org/pyPEG Parse¬ only, then output ¬http://fdik.org/pyPEG/#pyAST pyAST¬
+        as text to stdout. The pyAST is the
+        ¬http://en.wikipedia.org/wiki/Abstract_syntax_tree Abstract Syntax Tree¬
+        of the parsed script as ¬http://docs.python.org/library/stdtypes.html Python data structure¬.
+        >>
+
+    h3 > -V, --version
+
+    p   >>
+        Show version and ¬http://en.wikipedia.org/wiki/Copyleft Copyleft¬ information of
+        the YML implementation.
+        >>
+
+    h3 > YML_PATH environment variable
+
+    p   >>
+        If «YML_PATH» is set to a colon separated ¬http://en.wikipedia.org/wiki/Path_(computing) path¬
+        list, then the `a href="features#including" code "include";` statement searches these paths.
+        If «YML_PATH» is not set, the local directory «.» is searched for files.
+        >>
+
+    h2 id=processor > The YML/YSLT processor
+
+    p   >>
+        If you're processing more complex tasks, say, executing an YSLT script over some
+        YML files, the YML/YSLT processor will possible fit better to your needs.
+        >>
+
+    p   >>
+        To use it, enter «yml2proc -y» followed by the filename of your YSLT script,
+        followed by the filenames of your YML input files:
+        >>
+
+    Code | % yml2proc -y myscript.ysl2 inputfile.yml2 > myscript.result
+
+    p > The YML/YSLT processor requires the ¬http://codespeak.net/lxml/ lxml Python library¬.
+
+    p > The YML/YSLT processor has the following options:
+
+    h3 > -h, --help
+
+    p > Show a help message and exit.
+
+    h3 > -C, --old-syntax
+
+    p > Use the syntax of YML 2 version 1.x (compatibility mode).
+
+    h3 > -D, --emit-linenumbers
+
+    p > Emit line numbers into the resulting XML for debugging purposes.
+
+    h3 id=debug > --debug
+
+    p   >>
+        switch on debug tracing to stderr; this enables the functionality
+        of the ¬yslt#debug debug(msg)¬ and ¬yslt#assert assert yml:assert(test, msg)¬ YSLT functions.
+        >>
+
+    h3 > -E ENCODING, --encoding ENCODING
+
+    p > encoding of input files (default: UTF-8)
+
+    h3 > -I INCLUDE_PATH, --include=INCLUDE_PATH
+
+    p { "Precede " code > ¬features#ymlpath YML_PATH¬
+      " by a colon separated " code "INCLUDE_PATH"; " to search for include files." }
+
+    h3 > -m, --omit-empty-parm-tags
+    
+    p   >>
+        Does nothing (only there for compatibility with older versions of «yml2proc»).
+        >>
+
+    h3 > -M, --empty-input-document
+
+    p   >>
+        Use an empty input document for YSLT or XSLT processing
+        >>
+
+    h3 > -n NORMALIZATION, --normalization=NORMALIZATION
+
+    p   >>
+        Unicode normalization (none, NFD, NFKD, NFC, NFKC, FCD, default is NFC)
+        >>
+
+    h3 > -o FILE, --output=FILE
+
+    p > Don't output to stdout, instead place output in file «FILE».
+
+    h3 > -p, --parse-only
+
+    p   >>
+        ¬http://fdik.org/pyPEG Parse¬ only, then output ¬http://fdik.org/pyPEG/#pyAST pyAST¬
+        as text to stdout. The pyAST is the
+        ¬http://en.wikipedia.org/wiki/Abstract_syntax_tree Abstract Syntax Tree¬
+        of the parsed script as ¬http://docs.python.org/library/stdtypes.html Python data structure¬.
+        >>
+
+    h3 > -e XPATH, --xpath=XPATH
+
+    p > Execute XPath expression XPATH and print result
+
+    p   >>
+        If you omit -y YSLTSCRIPT, then the result is printed. If you have an additional
+        -y YSLTSCRIPT parameter, then your YSLT script is processing the result of the
+        XPath expression only instead of processing the complete content of your input documents
+        >>
+
+    h3 > -P, --pretty
+    
+    p > Pretty print output adding whitespace
+
+    h3 > -x, --xml
+    
+    p > Input documents are XML already, don't try to convert them from YML
+
+    h3 > -y YSLTSCRIPT, --yslt=YSLTSCRIPT
+
+    p > Execute YSLT script YSLTSCRIPT
+
+    h3 > -X XSLTSCRIPT, --xslt=XSLTSCRIPT
+
+    p > Execute XSLT script XSLTSCRIPT
+
+    h3 > -d PARAMS, --paramdict=PARAMS
+
+    p   >>
+        Call XSLT or YSLT script with dictionary PARAMS as XPath parameters. PARAMS is a Python
+        expression which evaluates to a Python dictionary.
+        >>
+
+    p > Sample:
+
+    p code > yml2proc -y myscript -d 'dict(a=3, b="element[@name=2]")'
+
+    h3 > -s STRINGPARAMS, --stringparamdict=STRINGPARAMS
+
+    p   >>
+        Call XSLT or YSLT script with dictionary STRINGPARAMS as string parameters. STRINGPARAMS
+        is a Python expression which evaluates to a Python dictionary.
+        >>  
+
+    p > Sample:
+
+    p code > yml2proc -y myscript -s 'dict(forename="Hans", name="Meier")'
+
+    h3 > -Y, --xml2yml
+
+    p > Convert XML to normalized YML. Equivalent to -xy xml2yml.ysl2
+
+    p > The file xml2yml.ysl2 has to be in YML_PATH.
+
+    h3 > -V, --version
+
+    p   >>
+        Show version and ¬http://en.wikipedia.org/wiki/Copyleft Copyleft¬ information of
+        the YML implementation and exit.
+        >>
+
+    h3 > YML_PATH environment variable
+
+    p   >>
+        If «YML_PATH» is set to a colon separated ¬http://en.wikipedia.org/wiki/Path_(computing) path¬
+        list, then the `a href="features#including" code "include";` statement searches these paths.
+        If «YML_PATH» is not set, the local directory «.» is searched for files.
+        >>
+    
+    h2 id=recommended > Recommended external tools
+
+    h3 > XSLT Processor
+
+    p   >>
+        If you want to use ¬yslt YSLT¬ with «yml2c» instead of «yml2proc», you additionally need an
+        ¬http://www.w3.org/TR/xslt XSLT¬ processor.
+        >>
+
+    p > For that case, I recommend the ¬http://xmlsoft.org/XSLT/xsltproc2.html xsltproc tool¬.
+
+    p > To process YSLT, just use a pipe with the «xsltproc» command:
+
+    Code | % yml2c customer.ysl2 | xsltproc - customer.xml > customer.html
+
+    h3 > XML Renicing Tool
+
+    p   >>
+        Sometimes, you may want to have more human readable output with «yml2c». So an
+        ¬http://www.w3.org/XML/ XML¬ renicing tool can be helpful.
+        >>
+
+    p > The ¬http://xmlstar.sourceforge.net/ XMLStarlet¬ command line tool may be of interest.
+
+    p > Have a look on its «fo» command.
+
+    h3 > Windows tool chain
+
+    p   >>
+        See also the tips for a
+        ¬http://www.auchdieserschwachsinnmussinsinternet.de/2009-03/#s1236859037 Windows tool chain¬
+        for YML.
+        >>
+
+    h1 id=downloads > Downloads
+
+    p > You can here ¬http://fdik.org/yml2.tar.bz2 download the newest release of YML¬.
+
+    h2 > Older versions
+
+    p   >>
+        ¬http://fdik.org/yml-2.5.2.tar.bz2 YML 2.5.2¬
+        >>
+
+    p   >>
+        ¬http://fdik.org/yml-2.5.1.tar.bz2 YML 2.5.1¬
+        >>
+
+    p   >>
+        ¬http://fdik.org/yml-2.5.0.tar.bz2 YML 2.5.0¬
+        >>
+
+    p   >>
+        ¬http://fdik.org/yml-2.4.3.tar.bz2 YML 2.4.3¬
+        >>
+
+    p   >>
+        ¬http://fdik.org/yml-2.3.12.tar.bz2 YML 2.3.12¬
+        >>
+
+    p   >>
+        ¬http://fdik.org/yml-2.3.11.tar.bz2 YML 2.3.11¬
+        >>
+
+    p   >>
+        ¬http://fdik.org/yml-2.3.10.tar.bz2 YML 2.3.10¬
+        >>
+
+    p   >>
+        ¬http://fdik.org/yml-2.3.8.tar.bz2 YML 2.3.8¬
+        >>
+
+    p   >>
+        ¬http://fdik.org/yml-2.3.7.tar.bz2 YML 2.3.7¬
+        >>
+
+    p   >>
+        ¬http://fdik.org/yml-2.3.5.tar.bz2 YML 2.3.5¬
+        >>
+
+    p   >>
+        ¬http://fdik.org/yml-2.2.4.tar.bz2 YML 2.2.4¬
+        >>
+
+    p   >>
+        ¬http://fdik.org/yml-2.2.3.tar.bz2 YML 2.2.3¬
+        >>
+
+    p   >>
+        ¬http://fdik.org/yml-2.2.1.tar.bz2 YML 2.2.1¬
+        >>
+
+    p   >>
+        ¬http://fdik.org/yml-2.2.0.tar.bz2 YML 2.2.0¬
+        >>
+
+    p   >>
+        ¬http://fdik.org/yml-2.1.17.tar.bz2 YML 2.1.17¬
+        >>
+
+    p   >>
+        ¬http://fdik.org/yml-2.1.14.tar.bz2 YML 2.1.14¬
+        >>
+
+    p   >>
+        ¬http://fdik.org/yml-2.1.13.tar.bz2 YML 2.1.13¬
+        >>
+
+    p   >>
+        ¬http://fdik.org/yml-2.1.12.tar.bz2 YML 2.1.12¬
+        >>
+
+    p   >>
+        ¬http://fdik.org/yml-2.1.7.tar.bz2 YML 2.1.7¬
+        >>
+
+    p   >>
+        ¬http://fdik.org/yml-2.1.6.tar.bz2 YML 2.1.6¬
+        >>
+
+    p   >>
+        ¬http://fdik.org/yml-2.1.5.tar.bz2 YML 2.1.5¬
+        >>
+
+    p   >>
+        ¬http://fdik.org/yml-2.1.2.tar.bz2 YML 2.1.2¬
+        >>
+
+    p   >>
+        ¬http://fdik.org/yml-2.0.36.tar.bz2 YML 2.0.36¬
+        >>
+    p   >>
+        ¬http://fdik.org/yml-2.0.35.tar.bz2 YML 2.0.35¬
+        >>
+
+    p > ¬http://fdik.org/yml1 To the Homepage of version 1 of YML...¬
+
+    div id=bottom {
+        a href="yslt" "<< back to YSLT" " "
+        a href="#top" "^Top^" " "
+        a href="toolchain.en.yhtml2" "(source)"
+    }
+}

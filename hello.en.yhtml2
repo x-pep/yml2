@@ -1,0 +1,12 @@
+include homepage.en.yhtml2
+
+page "Hello, world" {
+    p   >>
+        Hello, world! I can link here, say:
+        ¬http://en.wikipedia.org to Wikipedia¬
+        >>
+
+    p   >>
+        This is ƒemphasized. And this is «code».
+        >>
+}

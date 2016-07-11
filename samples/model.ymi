@@ -1,0 +1,15 @@
+decl package +name;
+decl class +name;
+decl attr +type +name;
+
+package Bla {
+    class Customer {
+        attr long id;
+        attr string name;
+    }
+    class Order {
+        attr long id;
+        attr string desc;
+    }
+}
+

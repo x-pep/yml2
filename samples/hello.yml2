@@ -1,0 +1,11 @@
+decl hello(dingens) alias blub:DingensBlubber {
+    something {
+        special {
+            content;
+        }
+    }
+};
+
+hello 42 {
+    world;
+}

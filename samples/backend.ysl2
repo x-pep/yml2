@@ -1,0 +1,9 @@
+include yslt.yml2
+
+textstylesheet {
+    template "/list" {
+        > CREATE TABLE 
+        value "name()";
+        > (\n
+        apply "*/*";
+

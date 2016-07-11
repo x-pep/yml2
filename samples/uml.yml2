@@ -1,0 +1,46 @@
+include yslt.yml2
+
+decl UML is textstylesheet(
+    xmlns:uml="http://schema.omg.org/spec/UML/2.1",
+    xmlns:xmi="http://schema.omg.org/spec/XMI/2.1" 
+) {
+    output *output;
+    const "space", !"'" + " " * 200 + "'"!;
+    param "autoindent", 4;
+    template "text()";
+    content;
+};
+
+decl Root is template(match="/xmi:XMI/uml:Model/packagedElement"),
+     All  is template(%match="*", match="//[%match]");
+
+decl Package is template(
+    %match="true()",
+    match="packagedElement[@xmi:type='uml:Package' and (%match)]"
+);
+
+decl applyPackages is apply (
+    %match="true()",
+    select="packagedElement[@xmi:type='uml:Package' and (%match)]"
+);
+
+decl Class is template(
+    %match="true()",
+    match="packagedElement[@xmi:type='uml:Class' and (%match)]"
+);
+
+decl applyClasses is apply (
+    %match="true()",
+    select="packagedElement[@xmi:type='uml:Class' and (%match)]"
+);
+
+decl Attribute is template(
+    %match="true()",
+    match="ownedAttribute[@xmi:type='uml:Property' and type/@xmi:type='uml:PrimitiveType' and (%match)]"
+);
+
+decl applyAttributes is apply (
+    %match="true()",
+    select="ownedAttribute[@xmi:type='uml:Property' and type/@xmi:type='uml:PrimitiveType' and (%match)]"
+);
+

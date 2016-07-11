@@ -1,0 +1,27 @@
+package Bla;
+
+class Customer {
+    // attribute id
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int value) {
+        id = value;
+    }
+
+    private int id;
+
+    // attribute name
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String value) {
+        name = value;
+    }
+
+    private String name;
+}

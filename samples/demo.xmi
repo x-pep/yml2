@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xmi:XMI xmi:version="2.1" xmlns:uml="http://schema.omg.org/spec/UML/2.1" xmlns:xmi="http://schema.omg.org/spec/XMI/2.1">
+	<xmi:Documentation exporter="Bouml" exporterVersion="1.7.2"/>
+	<uml:Model xmi:type="uml:Model" xmi:id="themodel" name="demo">
+		<packagedElement xmi:type="uml:Package" xmi:id="BOUML_0x81_22" name="Demo">
+			<packagedElement xmi:type="uml:Class" name="Customer" xmi:id="BOUML_0x1f417_4" visibility="package" isAbstract="false" >
+				<ownedAttribute xmi:type="uml:Property" name="id" xmi:id="BOUML_0x1f417_1" visibility="public">
+					<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#String"/>
+				</ownedAttribute>
+				<ownedAttribute xmi:type="uml:Property" name="name" xmi:id="BOUML_0x1f497_1" visibility="private">
+					<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#String"/>
+				</ownedAttribute>
+			</packagedElement>
+		</packagedElement>
+	</uml:Model>
+</xmi:XMI>

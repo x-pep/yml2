@@ -1,0 +1,3 @@
+decl module +name;
+decl interface +name;
+

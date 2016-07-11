@@ -1,0 +1,1 @@
+decl manpage(xmlns="http://docbook.org/ns/docbook", version="5.0", *title) alias article { title *title; content; };

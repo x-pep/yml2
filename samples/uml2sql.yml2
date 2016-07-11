@@ -1,0 +1,20 @@
+define operator "†(\w+)" as call "printType" with "name", "%1";
+define operator "“(.*?)”" as call "ucase" with "text", "%1";
+
+function "ucase" {
+    param "text";
+
+    > «translate(substring($text, 1, 1), 'abcdefghijklmnopqrstuvwxyz', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')»
+    > «substring($text, 2)»
+}
+
+function "printType" {
+    param "name";
+
+    choose {
+        when '$name/@href = "http://schema.omg.org/spec/UML/2.1/uml.xml#UnlimitedNatural"'
+            > INTEGER
+        when '$name/@href = "http://schema.omg.org/spec/UML/2.1/uml.xml#String"'
+            > VARCHAR
+    }
+}

@@ -1,0 +1,9 @@
+function "fak" {
+    param "n";
+
+    choose {
+        when "n=0" value 1
+        otherwise value "$n * fak($n-1)";
+    }
+}
+

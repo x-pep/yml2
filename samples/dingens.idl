@@ -1,0 +1,20 @@
+module Bla {
+    struct Blub {
+        long a;
+        string b;
+    };
+
+    interface Blubber {
+        Blub getBlub();
+    };
+
+    typedef My::Complicated::Reachable::Thing Thing;
+
+    interface Irgendwas {
+        struct Bla {
+
+        };
+
+        readonly attribute Thing b;
+    };
+};

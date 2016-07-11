@@ -1,0 +1,15 @@
+include yslt.yml2
+
+stylesheet {
+    template "/" html {
+        head title "Customer List";
+        body apply "list";
+    }
+
+    template "list" table apply "customer[starts-with(name, 'Kurt')]";
+
+    template "customer" tr {
+        td value "id";
+        td value "name";
+    }
+}

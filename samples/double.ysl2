@@ -1,0 +1,3 @@
+include yslt.yml2
+
+tstylesheet template "/when/*" | «name()»

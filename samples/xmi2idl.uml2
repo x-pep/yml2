@@ -1,0 +1,21 @@
+include uml.yml2
+
+UML {
+    include uml2idl.yml2
+
+    Root apply "packagedElement", 0;
+
+    Package {
+        | module «@name» {
+        applyClass;
+        | };
+    }
+
+    Class("@stereotype='Struct'") {
+        | interface «@name» {
+        applyAttributes;
+        | };
+    }
+
+    Attribute | attribute †type «@name»;
+}
