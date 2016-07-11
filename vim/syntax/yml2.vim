@@ -9,7 +9,7 @@ if exists("b:current_syntax")
 endif
 
 " A bunch of useful YSLT keywords
-syn keyword	cStatement	include decl operator document def param const output value indent all text with withIndent element attrib processing number sort import message debug assert operator goto break return continue asm
+syn keyword	cStatement	include in decl is alias operator document def param const output value indent all text with withIndent element attrib processing number sort import message debug assert operator goto break return continue asm
 syn keyword	cLabel		stylesheet estylesheet textstylesheet tstylesheet template function case default
 syn keyword	cConditional	choose when otherwise if else switch
 syn keyword	cRepeat		for foreach apply while do
