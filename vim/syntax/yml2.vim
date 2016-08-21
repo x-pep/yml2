@@ -22,7 +22,7 @@ syn keyword	cTodo		contained TODO FIXME XXX
 syn match	cBadContinuation contained "\\\s\+$"
 
 " cCommentGroup allows adding matches for special things in comments
-syn cluster	cCommentGroup	contains=cTodo,cBadContinuation,ymlString
+syn cluster	cCommentGroup	contains=cTodo,cBadContinuation,ymlStringComment
 
 " String and Character constants
 " Highlight special characters (those which have a backslash) differently
@@ -30,7 +30,8 @@ syn match	cSpecial	display contained "\\\(x\x\+\|\o\{1,3}\|.\|$\)"
 if !exists("c_no_utf")
   syn match	cSpecial	display contained "\\\(u\x\{4}\|U\x\{8}\)"
 endif
-syn region	ymlString		start=+L\=«+ skip=+\\\\\|\\"+ end=+»+ contains=cSpecial,@Spell
+syn region	ymlString		start=+L\=«+ end=+»+ contains=cSpecial,@Spell
+syn region	ymlStringComment		start=+L\=«+ end=+»+ contains=cSpecial,@Spell
 if exists("c_no_cformat")
   syn region	cString		start=+L\="+ skip=+\\\\\|\\"+ end=+"+ contains=cSpecial,@Spell,ymlString
   " cCppString: same as cString, but ends at end of line
@@ -370,6 +371,7 @@ hi def link cCppSkip		cCppOut
 hi def link cCppOut2		cCppOut
 hi def link cCppOut		Comment
 hi def link ymlString   Operator
+hi def link ymlStringComment   Operator
 let b:current_syntax = "yml2"
 
 " vim: ts=8
