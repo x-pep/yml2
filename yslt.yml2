@@ -40,7 +40,8 @@ in xsl {
         xmlns:dyn='http://exslt.org/dynamic',
         xmlns:set='http://exslt.org/sets',
         xmlns:date='http://exslt.org/dates-and-times',
-        extension-element-prefixes='exsl func str dyn set math date'
+        xmlns:yml='http://fdik.org/yml',
+        extension-element-prefixes='exsl func str dyn set math date yml'
     );
 
     decl textstylesheet is estylesheet(*output="text") {
