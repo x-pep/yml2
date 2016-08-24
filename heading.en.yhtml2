@@ -58,6 +58,7 @@ div id=navigation {
     ne "http://www.auchdieserschwachsinnmussinsinternet.de/2009-03/#s1236859037", "Windows tool chain";
     ne "http://fdik.org/yml2.tar.bz2", "Download YML 2";
     ne "toolchain#downloads", "Download different versions";
+    ne "https://cacert.pep.foundation/dev/repos/yml2/", "Mercurial Repository at p≡p foundation (CAcert needed)";
 
     h1 "Misc";
     ne "gpl-2.0.txt", "License for YML";
