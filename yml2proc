@@ -132,7 +132,7 @@ try:
         else:
             result = parse(ymlC, files, True, comment)
             if options.parseonly:
-                print result
+                print(result)
                 sys.exit(0)
             else:
                 rtext = backend.finish(result)
@@ -224,25 +224,25 @@ try:
         outfile.write(plaintext)
         outfile.close()
     else:
-        print plaintext
+        print(plaintext)
 
 except KeyboardInterrupt:
     w("\n")
     sys.exit(1)
-except YMLAssert, msg:
+except YMLAssert as msg:
     w(u"YML Assertion failed: " + u(msg) + u"\n")
     sys.exit(2)
-except KeyError, msg:
+except KeyError as msg:
     w(u"not found: " + u(msg) + u"\n")
     sys.exit(4)
-except LookupError, msg:
+except LookupError as msg:
     w(u"not found: " + u(msg) + u"\n")
     sys.exit(4)
-except etree.XMLSyntaxError, e:
+except etree.XMLSyntaxError as e:
     log = e.error_log.filter_from_level(etree.ErrorLevels.FATAL)
     for entry in log:
         w(u"XML error: " + u(entry.message) + u"\n")
     sys.exit(5)
-except Exception, msg:
+except Exception as msg:
     w(msg)
     sys.exit(5)

@@ -75,7 +75,7 @@ try:
     result = parse(ymlC, files, True, comment, packrat=True)
 
     if options.parseonly:
-        print result
+        print(result)
     else:
         result = backend.finish(result)
         if options.normalization != "none":
@@ -86,17 +86,17 @@ try:
             outfile.write(codecs.encode(result, options.encoding))
             outfile.close()
         else:
-            print codecs.encode(result, options.encoding)
+            print(codecs.encode(result, options.encoding))
 
 except KeyboardInterrupt:
     w("\n")
     sys.exit(1)
-except KeyError, msg:
+except KeyError as msg:
     w(u"not found: " + u(msg) + u"\n")
     sys.exit(4)
-except LookupError, msg:
+except LookupError as msg:
     w(u"not found: " + u(msg) + u"\n")
     sys.exit(4)
-except Exception, msg:
+except Exception as msg:
     w(msg)
     sys.exit(5)
