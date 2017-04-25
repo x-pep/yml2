@@ -42,7 +42,7 @@ in xsl {
         xmlns:sets='http://exslt.org/sets',
         xmlns:date='http://exslt.org/dates-and-times',
         xmlns:yml='http://fdik.org/yml',
-        extension-element-prefixes='exsl func str dyn set math date yml'
+        extension-element-prefixes='exsl func str dyn set sets math date yml'
     );
 
     decl textstylesheet is estylesheet(*output="text") {
