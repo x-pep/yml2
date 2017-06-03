@@ -53,3 +53,9 @@ def "yml:ucase" {
     param "text", "''";
     result "translate($text, 'abcdefghijklmnopqrstuvwxyz', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')";
 }
+
+def "yml:mixedCase" {
+    param "text", "''";
+    result "concat(yml:lcase(substring($text,1,1)),substring($text,2))";
+}
+
