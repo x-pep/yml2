@@ -67,9 +67,9 @@ try:
     # fileinput suffer from two nasty bugs :
     # - ignoring open hook with stdin
     # - iterator requires ctrl-D to be pressed twice on some platform
-    if args in [[],['-']] :
-        files._files=[]
-        files._buffer=[unicode(line, options.encoding) for line in sys.stdin.readlines()]
+    #if args in [[],['-']] :
+    #    files._files=[]
+    #    files._buffer=[unicode(line, options.encoding) for line in sys.stdin.readlines()]
 
     ymlC = ymlCStyle()
     result = parse(ymlC, files, True, comment, packrat=True)

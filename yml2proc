@@ -118,12 +118,6 @@ try:
 
     if not options.emptyinput:
         files = fileinput.input(args, mode="rU", openhook=fileinput.hook_encoded(options.encoding))
-        # fileinput suffer from two nasty bugs :
-        # - ignoring open hook with stdin
-        # - iterator requires ctrl-D to be pressed twice on siome platform
-        if args in [[],['-']] :
-            files._files=[]
-            files._buffer=[unicode(line, options.encoding) for line in sys.stdin.readlines()]
 
         if options.xml:
             rtext = ""
