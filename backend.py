@@ -626,6 +626,28 @@ def codegen(obj):
                 result += codegen(Symbol(u'lineQuote', u'| ' + l[space:]))
         return code(result)
 
+    elif ctype == "textsectionu":
+        result = u''
+        ll = obj[1].splitlines()
+        space = len(ll[-1]) - 2
+        for l in ll[1:-1]:
+            m = re.match(bqq, l)
+            if m:
+                cmd = m.group(1)
+                try:
+                    r, x = parseLine(cmd, _inner, [], True, comment)
+                    if x: raise SyntaxError(cmd)
+                    result += _finish(r)
+                except SyntaxError:
+                    if included:
+                        raise SyntaxError(u"in " + included + u":" + u(line) + u": syntax error in executing command: " + cmd.strip())
+                    else:
+                        raise SyntaxError(u"in " + u(line) + u": syntax error in executing command: " + cmd.strip())
+            else:
+                if result != u'': result += u' '
+                result += codegen(Symbol(u'quote', [u'> ' + l[space:]]))
+        return code(result)
+
     elif ctype == "lineQuote" or ctype == "quote":
         m, text, base, inds = None, u"", 0, 0
 

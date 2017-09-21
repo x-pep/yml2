@@ -1,4 +1,4 @@
-# YML 2.5.3 language definition
+# YML 2.5.6 language definition
 
 # written by VB.
 
@@ -77,12 +77,13 @@ def operator():     return 0, keyword("define"), keyword("operator"), literal, k
 def constant():     return 0, keyword("define"), [pointer, symbol], "=", literal, 0, [";", "."]
 def in_ns():        return keyword("in"), xmlSymbol, [_decl, ("{", -2, _decl, "}")]
 _decl = keyword("decl"), listing(decl), [";", "."]
-def textsection():  return r(r'(\|\|(\>*).*?\|\|(\>*))|(\>\>.*?\>\>)', re.S)
+def textsection():  return r(r'(\|\|(\>*).*?\|\|(\>*))', re.S)
+def textsectionu(): return r(r'(\>\>.*?\>\>)', re.S)
 def include():      return keyword("include"), 0, reverse, 0, [ktext, kxml], filename, 0, [";", "."]
 def func():         return _func, 0, content
 def funclist():     return listing(func)
 _cmd = funclist, 0, [";", "."]
-_inner = [include, textsection, pythonCall, _cmd, quote, lineQuote, tagQuote, pyExp]
+_inner = [include, textsection, textsectionu, pythonCall, _cmd, quote, lineQuote, tagQuote, pyExp]
 _cc = "{", -1, _inner, "}"
 def content_plain(): return [ (_l, 0, _p, 0, _b, 0, _cc), (_p, 0, _b, 0, _cc), (_b, 0, _cc), _cc ]
 content_plain.__name__ = "content"
