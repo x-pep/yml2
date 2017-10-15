@@ -725,14 +725,14 @@ def codegen(obj):
                 filemask = arg
 
         if filemask[0] == '/' or filemask[0] == '.':
-            files = glob(filemask)
+            files = sorted(glob(filemask))
         else:
             files = []
             for directory in includePath:
                 path = os.path.join(directory, filemask)
-                files.extend(glob(path))
+                files.extend(sorted(glob(path)))
 
-        if reverse:
+        if files and reverse:
             files = files[-1::-1]
 
         if not(files):
