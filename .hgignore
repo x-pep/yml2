@@ -1,2 +1,6 @@
 syntax: glob
 *.pyc
+venv
+dist
+build
+YML2.egg-info
